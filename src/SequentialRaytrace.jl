@@ -1,6 +1,5 @@
 module SequentialRaytrace
 
-"greet greets the world"
-greet() = print("Hello World!")
+include("Dispersion.jl")
 
 end # module
