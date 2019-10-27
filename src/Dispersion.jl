@@ -1,3 +1,6 @@
+
+export air, silica, refractive_index
+
 abstract type AbstractMedium end
 
 struct Sellmeier_1{T} <: AbstractMedium
