@@ -3,7 +3,7 @@ module SequentialRaytrace
 include("Dispersion.jl")
 include("Ray.jl")
 
-import ResultTypes: Result, ErrorResult, iserror, unwrap
+import ResultTypes: Result, ErrorResult, iserror, unwrap, unwrap_error
 
 include("Surfaces.jl")
 include("Lens.jl")

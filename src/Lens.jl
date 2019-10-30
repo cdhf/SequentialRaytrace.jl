@@ -1,5 +1,5 @@
 
-export Lens, trace
+export Lens, Object, trace
 
 struct Object{T, M <: AbstractMedium}
 	n :: M
@@ -29,7 +29,11 @@ function trace(lens, ray, wavelength) :: Result{Array{Ray}, RaytraceError}
 	set_ray(result, 1, ray)
 	s1 = lens.surfaces[1]
     # TODO: missing error handling
-    ray_at_s1 = unwrap(transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength))
+    wrapped = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
+    if iserror(wrapped)
+        return RaytraceError(unwrap_error(wrapped).error_type, result)
+    end
+    ray_at_s1 = unwrap(wrapped)
     set_ray(result, 2, ray_at_s1)
 
     ray_before = ray_at_s1
@@ -37,7 +41,11 @@ function trace(lens, ray, wavelength) :: Result{Array{Ray}, RaytraceError}
 	for i in 2:length(lens.surfaces)
 		s_before = lens.surfaces[i-1]
 		s = lens.surfaces[i]
-        ray_after = unwrap(transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength))
+        wrapped = transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength)
+        if iserror(wrapped)
+            return RaytraceError(unwrap_error(wrapped).error_type, result)
+        end
+        ray_after = unwrap(wrapped)
 		ray_height = 2 * sqrt(ray_after.x^2 + ray_after.y^2)
 		if (s.clear_diameter === Unlimited()) || (ray_height <= s.clear_diameter)
 			set_ray(result, index, ray_after)
@@ -46,7 +54,7 @@ function trace(lens, ray, wavelength) :: Result{Array{Ray}, RaytraceError}
 		else
 			set_ray(result, index, ray_after)
 			resize!(result, index)
-			return(RaytraceError(result, :vignetted))
+			return(RaytraceError(:vignetted, result))
 		end
 	end
 	s_last = lens.surfaces[end]

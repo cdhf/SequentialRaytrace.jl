@@ -117,6 +117,11 @@ function transfer_to_intersection(ray, t, s :: EvenAsphere)
 	# propagiere den Strahl erstmal zur sphärischen Grundfläche,
 	# was wahrscheinlich ein ganz guter Startwert ist
     # TODO: missing error handling
-	(ray_at_sphere, _E1) = transfer_to_intersection(ray, t, Sphere(s.curvature))
-	transfer_to_intersection_evenasphere(ray_at_sphere, s)
+	ts = transfer_to_intersection(ray, t, Sphere(s.curvature))
+    if iserror(ts)
+        return ts
+    else
+        (ray_at_sphere, _E1) = unwrap(ts)
+	    return transfer_to_intersection_evenasphere(ray_at_sphere, s)
+    end
 end

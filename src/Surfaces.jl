@@ -1,5 +1,5 @@
 
-export even_asphere, sphere, plano
+export even_asphere, sphere, plano, Unlimited
 
 abstract type AbstractSurface end
 
