@@ -3,6 +3,9 @@ uuid = "e6e29653-ad00-4000-b95c-264f03acb66e"
 authors = ["Danny Chan"]
 version = "0.1.0"
 
+[deps]
+ResultTypes = "08a2b407-ddc3-586a-afd6-c784ad1fffe2"
+
 [compat]
 julia = "1.2"
 
