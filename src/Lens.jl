@@ -22,11 +22,11 @@ end
 
 function set_ray(result, index, ray)
 	result[index] = ray
+    return result
 end
 
-function trace(lens, ray, wavelength) :: Result{Array{Ray}, RaytraceError}
-	result = gen_result(lens)
-	set_ray(result, 1, ray)
+function trace(lens, ray, wavelength, result, updater)
+	result = updater(result, 1, ray)
 	s1 = lens.surfaces[1]
     # TODO: missing error handling
     wrapped = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
@@ -34,7 +34,7 @@ function trace(lens, ray, wavelength) :: Result{Array{Ray}, RaytraceError}
         return RaytraceError(unwrap_error(wrapped).error_type, result)
     end
     ray_at_s1 = unwrap(wrapped)
-    set_ray(result, 2, ray_at_s1)
+    result = updater(result, 2, ray_at_s1)
 
     ray_before = ray_at_s1
 	index = 3
@@ -48,19 +48,19 @@ function trace(lens, ray, wavelength) :: Result{Array{Ray}, RaytraceError}
         ray_after = unwrap(wrapped)
 		ray_height = 2 * sqrt(ray_after.x^2 + ray_after.y^2)
 		if (s.clear_diameter === Unlimited()) || (ray_height <= s.clear_diameter)
-			set_ray(result, index, ray_after)
+			result = updater(result, index, ray_after)
 			index = index + 1
 			ray_before = ray_after
 		else
-			set_ray(result, index, ray_after)
+			reuslt = updater(result, index, ray_after)
 			resize!(result, index)
 			return(RaytraceError(:vignetted, result))
 		end
 	end
 	s_last = lens.surfaces[end]
 	ray_after = transfer_to_plane(ray_before, s_last.t)
-	set_ray(result, index, ray_after)
-	result
+	result = updater(result, index, ray_after)
+	return result
 end
 
 
