@@ -11,7 +11,7 @@ include("Lens.jl")
 function testlens() 
         Lens(Object(air, 200.0),
                       [
-                        sphere(1/50, Unlimited(), silica, 15.0)
+                        sphere(1/50, Unlimited(), silica, 15.0, :first_surface)
                         #= sphere(-1/50, Unlimited(), air, 65) =#
                         even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, Unlimited(), air, 65.0)
                       ]
@@ -64,10 +64,10 @@ function test3()
     Z = sqrt(1.0 - X^2 - Y^2)
     ray = Ray(x, y, z, X, Y, Z)
     lens = testlens()
+    result = gen_result(lens)
     for i in 1:1_000_000
-        change_lens(lens)
-        result = 1
-        trace(lens, ray, 1.0, result, (r, _a, _b) -> r)
+        #change_lens(lens)
+        trace(lens, ray, 1.0, result, set_ray)
     end
 end
 
