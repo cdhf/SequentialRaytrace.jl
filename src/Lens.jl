@@ -1,27 +1,26 @@
-
 export Lens, Object, trace
 
 struct Object{T, M <: AbstractMedium}
-	n :: M
-	t :: T
+    n :: M
+    t :: T
 end
 
 struct Lens
-	object :: Object
-	surfaces :: Array{OpticalSurface}
+    object :: Object
+    surfaces :: Array{OpticalSurface}
 end
 
 function transfer_to_plane(ray, t)
-	(r, e) = transfer_to_intersection(ray, t, Sphere(0.0))
-	r
+    (r, e) = transfer_to_intersection(ray, t, Sphere(0.0))
+    r
 end
 
 function gen_result(lens)
-	Array{Ray}(undef, 2 + length(lens.surfaces))
+    Array{Ray}(undef, 2 + length(lens.surfaces))
 end
 
 function set_ray(result, index, _symbol, ray)
-	result[index] = ray
+    result[index] = ray
     return result
 end
 
@@ -35,8 +34,8 @@ result :: Any
 updater :: result -> surface index -> surface id (Symbol) -> Ray -> result
 """
 function trace(lens, ray, wavelength, result, updater)
-	result = updater(result, 1, :object, ray)
-	s1 = lens.surfaces[1]
+    result = updater(result, 1, :object, ray)
+    s1 = lens.surfaces[1]
     # TODO: missing error handling
     wrapped = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
     if iserror(wrapped)
@@ -46,30 +45,28 @@ function trace(lens, ray, wavelength, result, updater)
     result = updater(result, 2, s1.id, ray_at_s1)
 
     ray_before = ray_at_s1
-	index = 3
-	for i in 2:length(lens.surfaces)
-		s_before = lens.surfaces[i-1]
-		s = lens.surfaces[i]
+    index = 3
+    for i in 2:length(lens.surfaces)
+        s_before = lens.surfaces[i-1]
+        s = lens.surfaces[i]
         wrapped = transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength)
         if iserror(wrapped)
             return RaytraceError(unwrap_error(wrapped).error_type, result)
         end
         ray_after = unwrap(wrapped)
-		ray_height = 2 * sqrt(ray_after.x^2 + ray_after.y^2)
-		if (s.clear_diameter === Unlimited()) || (ray_height <= s.clear_diameter)
-			result = updater(result, index, s.id, ray_after)
-			index = index + 1
-			ray_before = ray_after
-		else
-			reuslt = updater(result, index, s.id, ray_after)
-			resize!(result, index)
-			return(RaytraceError(:vignetted, result))
-		end
-	end
-	s_last = lens.surfaces[end]
-	ray_after = transfer_to_plane(ray_before, s_last.t)
-	result = updater(result, index, s_last.id, ray_after)
-	return result
+        ray_height = 2 * sqrt(ray_after.x^2 + ray_after.y^2)
+        if (s.clear_diameter === Unlimited()) || (ray_height <= s.clear_diameter)
+            result = updater(result, index, s.id, ray_after)
+            index = index + 1
+            ray_before = ray_after
+        else
+            reuslt = updater(result, index, s.id, ray_after)
+            resize!(result, index)
+            return(RaytraceError(:vignetted, result))
+        end
+    end
+    s_last = lens.surfaces[end]
+    ray_after = transfer_to_plane(ray_before, s_last.t)
+    result = updater(result, index, s_last.id, ray_after)
+    return result
 end
-
-
