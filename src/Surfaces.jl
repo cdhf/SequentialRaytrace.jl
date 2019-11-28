@@ -1,4 +1,4 @@
-export even_asphere, sphere, plano, Unlimited
+export even_asphere, sphere, plano, paraxial, Unlimited
 
 abstract type AbstractSurface end
 
@@ -9,6 +9,7 @@ end
 
 include("Sphere.jl")
 include("EvenAsphere.jl")
+include("Paraxial.jl")
 
 struct Unlimited end
 
@@ -44,4 +45,12 @@ end
 
 function plano(clear_diameter, n, t, id)
     sphere(0.0, clear_diameter, n, t, id)
+end
+
+function paraxial(focal_length, clear_diameter, n, t)
+    OpticalSurface(Paraxial(focal_length), clear_diameter, n, t, nothing)
+end
+
+function paraxial(focal_length, clear_diameter, n, t, id)
+    OpticalSurface(Paraxial(focal_length), clear_diameter, n, t, id)
 end

@@ -1,42 +1,36 @@
 @testset "Raytracing" begin
-    X = 0.1
-    Y = -0.1
+    X = 0.0
+    Y = 0.0
+
     ray = Ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
+    @testset "paraxial surface x" begin
+        lens = Lens(Object(air, 200.0),
+                    [
+                        paraxial(150.5, Unlimited(), air, 0)
+                    ]
+                    )
+        result = SequentialRaytrace.gen_result(lens)
+        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(0.0, 20.0, 0.0, 0.0, -0.13173227, 0.99128533) atol=0.000001
+    end
 
+
+    ray = Ray(5.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "without raytracing errors" begin
-        # only spherical surfaces
-        lens = Lens(Object(air, 200.0),
-                    [
-                        sphere(1/50, Unlimited(), silica, 15.0)
-                        sphere(-1/50, Unlimited(), air
-                               , 65.0)
-                    ]
-                    )
-        result = SequentialRaytrace.gen_result(lens)
-        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(-3.913794,-7.082669,0.0,-0.327602,-0.081838,0.941265) atol=0.000001
-
-        # also even aspheres
-        lens = Lens(Object(air, 200.0),
-                    [
-                        sphere(1/50, Unlimited(), silica, 15.0)
-                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Unlimited(), air, 65.0)
-                    ]
-                    )
-        result = SequentialRaytrace.gen_result(lens)
-        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(-2.758260, -7.099784, 0.0, -0.313750, -0.082502, 0.945914) atol=0.000001
-
-        # and dummy surfaces
         lens = Lens(Object(air, 200.0),
                     [
                         sphere(1/50, Unlimited(), silica, 15.0)
                         even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Unlimited(), air, 35.0)
-                        plano(Unlimited(), air, 30.0)
+                        plano(Unlimited(), air, 10.0)
+                        paraxial(-120.3, Unlimited(), air, 30)
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
-        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(-2.758260, -7.099784, 0.0, -0.313750, -0.082502, 0.945914) atol=0.000001
+        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
     end
 
+    X = 0.1
+    Y = -0.1
+    ray = Ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "with raytracing errors" begin
         lens = Lens(Object(air, 200.0),
                     [
