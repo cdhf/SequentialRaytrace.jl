@@ -2,6 +2,11 @@ struct Sphere{T} <: AbstractSurface
     curvature :: T
 end
 
+function sag(x, y, s :: Sphere)
+    radius2 = x^2 + y^2
+    return(s.curvature * radius2 / (1 + sqrt(1 - (s.curvature^2 * radius2))))
+end
+
 # Raytrace für sphärische Flächen
 function transfer_to_intersection(ray, t, s :: Sphere)
     cv = s.curvature

@@ -16,7 +16,12 @@ function sag_evenasphere(radial_dist, s)
     z = s.curvature * radial_dist^2 / abs(1 + sqrt(1 - s.curvature^2 * radial_dist^2))
     z = z + s.c4 * radial_dist^4
     z = z + s.c6 * radial_dist^6
-    z + s.c8 * radial_dist^8
+    return(z + s.c8 * radial_dist^8)
+end
+
+function sag(x, y, s :: EvenAsphere)
+    radius = sqrt(x^2 + y^2)
+    return(sag_evenasphere(radius, s))
 end
 
 """
