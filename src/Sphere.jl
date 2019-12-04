@@ -53,10 +53,6 @@ function transfer_and_refract(ray, n1, t, s, n2, wavelength) :: Result{Ray, Rayt
         return transfered
     else
         refracted = refract(unwrap(transfered), n1, s, n2, wavelength)
-        if iserror(refracted)
-            return refracted
-        else
-            return refracted
-        end
+        return refracted
     end
 end
