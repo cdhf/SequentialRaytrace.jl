@@ -54,13 +54,12 @@ function trace(lens, ray, wavelength, result, updater)
             return RaytraceError(unwrap_error(wrapped).error_type, result)
         end
         ray_after = unwrap(wrapped)
-        ray_height = 2 * sqrt(ray_after.x^2 + ray_after.y^2)
-        if (s.clear_diameter === Unlimited()) || (ray_height <= s.clear_diameter)
+        if !is_vignetted(ray_after, s.aperture)
             result = updater(result, index, s.id, ray_after)
             index = index + 1
             ray_before = ray_after
         else
-            reuslt = updater(result, index, s.id, ray_after)
+            result = updater(result, index, s.id, ray_after)
             resize!(result, index)
             return(RaytraceError(:vignetted, result))
         end
