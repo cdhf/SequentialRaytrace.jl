@@ -1,7 +1,7 @@
 """
 Zemax paraxial surface
 """
-struct Paraxial{T} <: AbstractSurface
+struct Paraxial{T <: Real} <: AbstractSurface
     focal_length :: T
 end
 

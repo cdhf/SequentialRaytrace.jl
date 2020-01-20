@@ -15,7 +15,7 @@ abstract type AbstractAperture end
 
 struct Unlimited <: AbstractAperture end
 
-struct Clear_Diameter{T} <: AbstractAperture
+struct Clear_Diameter{T <: Real} <: AbstractAperture
     clear_diameter :: T
 end
 
@@ -28,7 +28,7 @@ function is_vignetted(ray, a :: Clear_Diameter)
     return(ray_height > a.clear_diameter)
 end
 
-struct OpticalSurface{T, S <: AbstractSurface, M <: AbstractMedium, A <: AbstractAperture}
+struct OpticalSurface{T <: Real, S <: AbstractSurface, M <: AbstractMedium, A <: AbstractAperture}
     surface :: S
     aperture :: A
     n :: M

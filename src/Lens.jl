@@ -1,6 +1,6 @@
 export Lens, Object, trace
 
-struct Object{T, M <: AbstractMedium}
+struct Object{T <: Real, M <: AbstractMedium}
     n :: M
     t :: T
 end

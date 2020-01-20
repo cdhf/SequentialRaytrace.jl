@@ -1,4 +1,4 @@
-struct Sphere{T} <: AbstractSurface
+struct Sphere{T <: Real} <: AbstractSurface
     curvature :: T
 end
 

@@ -1,4 +1,4 @@
-struct EvenAsphere{T} <: AbstractSurface
+struct EvenAsphere{T <: Real} <: AbstractSurface
     curvature :: T
     conic :: T
     c4 :: T

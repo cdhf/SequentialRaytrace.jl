@@ -6,7 +6,7 @@ abstract type AbstractMedium end
 Definition of a material's dispersion using the Sellmeier equation. This definition is
 equivalent to the Zemax Sellmeier_1 dispersion equation.
 """
-struct Sellmeier_1{T} <: AbstractMedium
+struct Sellmeier_1{T <: Real} <: AbstractMedium
     k1 :: T
     l1 :: T
     k2 :: T
@@ -18,7 +18,7 @@ end
 """
 Definition of a medium with no dispersion.
 """
-struct Constant_Index{T} <: AbstractMedium
+struct Constant_Index{T <: Real} <: AbstractMedium
     n :: T
 end
 

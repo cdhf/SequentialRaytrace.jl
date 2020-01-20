@@ -6,7 +6,7 @@ export Ray, ray_from_NA
 A Ray described by its (x, y, z) coordinates and the
 direction cosines (cx, cy, cz)
 """
-struct Ray{T}
+struct Ray{T <: Real}
     x :: T
     y :: T
     z :: T
