@@ -19,22 +19,21 @@ function gen_result(lens)
     Array{Ray}(undef, 2 + length(lens.surfaces))
 end
 
-function set_ray(result, index, _symbol, ray)
-    result[index] = ray
+function update_result(result :: Array{Ray, 1}, index, _symbol, ray)
+     result[index] = ray
     return result
 end
 
 """
-trace(lens, ray, wavelength, result, updater)
+trace(lens, ray, wavelength, result)
 
 lens :: Lens
 ray :: Ray
 wavelength :: Real
-result :: Any
-updater :: result -> surface index -> surface id (Symbol) -> Ray -> result
+result :: something that has an update_result function
 """
-function trace(lens, ray, wavelength, result, updater)
-    result = updater(result, 1, :object, ray)
+function trace(lens, ray, wavelength, result)
+    result = update_result(result, 1, :object, ray)
     s1 = lens.surfaces[1]
     # TODO: missing error handling
     wrapped = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
@@ -42,7 +41,7 @@ function trace(lens, ray, wavelength, result, updater)
         return RaytraceError(unwrap_error(wrapped).error_type, result)
     end
     ray_at_s1 = unwrap(wrapped)
-    result = updater(result, 2, s1.id, ray_at_s1)
+    result = update_result(result, 2, s1.id, ray_at_s1)
 
     ray_before = ray_at_s1
     index = 3
@@ -55,17 +54,17 @@ function trace(lens, ray, wavelength, result, updater)
         end
         ray_after = unwrap(wrapped)
         if !is_vignetted(ray_after, s.aperture)
-            result = updater(result, index, s.id, ray_after)
+            result = update_result(result, index, s.id, ray_after)
             index = index + 1
             ray_before = ray_after
         else
-            result = updater(result, index, s.id, ray_after)
+            result = update_result(result, index, s.id, ray_after)
             resize!(result, index)
             return(RaytraceError(:vignetted, result))
         end
     end
     s_last = lens.surfaces[end]
     ray_after = transfer_to_plane(ray_before, s_last.t)
-    result = updater(result, index, s_last.id, ray_after)
+    result = update_result(result, index, s_last.id, ray_after)
     return result
 end

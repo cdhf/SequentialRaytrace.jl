@@ -10,10 +10,10 @@
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
-        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
+        @test unwrap(trace(lens, ray, 1.0, result))[end] ≈ Ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
 
         ray2 = ray_from_NA(0.0, 0.1)
-        r = unwrap(trace(lens, ray2, 1.0, result, SequentialRaytrace.set_ray))
+        r = unwrap(trace(lens, ray2, 1.0, result))
         @test r[end] ≈ Ray(0.0, 20.100756305, 0.0, 0.0, -0.0330380156, 0.9994540958) atol=0.000000001
         y = r[end].y
         cy = r[end].cy
@@ -34,7 +34,7 @@
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
-        @test unwrap(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))[end] ≈ Ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
+        @test unwrap(trace(lens, ray, 1.0, result))[end] ≈ Ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
     end
 
     X = 0.1
@@ -50,9 +50,9 @@
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
-        @test iserror(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))
-        @test length((unwrap_error(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))).data) == 3
-        @test (unwrap_error(trace(lens, ray, 1.0, result, SequentialRaytrace.set_ray))).data[end] ≈ Ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
-        @test unwrap_error(trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result, SequentialRaytrace.set_ray)).error_type == :ray_miss
+        @test iserror(trace(lens, ray, 1.0, result))
+        @test length((unwrap_error(trace(lens, ray, 1.0, result))).data) == 3
+        @test (unwrap_error(trace(lens, ray, 1.0, result))).data[end] ≈ Ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
+        @test unwrap_error(trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result)).error_type == :ray_miss
     end
 end

@@ -29,10 +29,10 @@ function test2()
     ray = Ray(x, y, z, X, Y, Z)
     lens = testlens()
     result = gen_result(lens)
-    r1 = trace(lens, ray, 1.0, result, set_ray)
+    r1 = trace(lens, ray, 1.0, result)
     change_lens(lens)
     result = gen_result(lens)
-    r2 = trace(lens, ray, 1.0, result, set_ray)
+    r2 = trace(lens, ray, 1.0, result)
     (unwrap(r1)[end], unwrap(r2)[end])
 end
 
