@@ -4,7 +4,6 @@ authors = ["Danny Chan"]
 version = "0.1.0"
 
 [deps]
-BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 ResultTypes = "08a2b407-ddc3-586a-afd6-c784ad1fffe2"
 
 [compat]
