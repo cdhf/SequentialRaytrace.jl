@@ -11,7 +11,7 @@ struct Lens
 end
 
 function transfer_to_plane(ray, t)
-    (r, e) = transfer_to_intersection(ray, t, Sphere(0.0))
+    (r, e) = unwrap(transfer_to_intersection(ray, t, Sphere(zero(t))))
     r
 end
 
@@ -32,13 +32,13 @@ ray :: Ray
 wavelength :: Real
 result :: something that has an update_result function
 """
-function trace(lens, ray, wavelength, result)
+function trace(lens, ray, wavelength, result :: T) where T
     result = update_result(result, 1, :object, ray)
     s1 = lens.surfaces[1]
     # TODO: missing error handling
     wrapped = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
     if iserror(wrapped)
-        return RaytraceError(unwrap_error(wrapped).error_type, result)
+        return ErrorResult(T, RaytraceError(unwrap_error(wrapped).error_type, result))
     end
     ray_at_s1 = unwrap(wrapped)
     result = update_result(result, 2, s1.id, ray_at_s1)
@@ -50,7 +50,7 @@ function trace(lens, ray, wavelength, result)
         s = lens.surfaces[i]
         wrapped = transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength)
         if iserror(wrapped)
-            return RaytraceError(unwrap_error(wrapped).error_type, result)
+            return ErrorResult(T, RaytraceError(unwrap_error(wrapped), result))
         end
         ray_after = unwrap(wrapped)
         if !is_vignetted(ray_after, s.aperture)
@@ -60,11 +60,11 @@ function trace(lens, ray, wavelength, result)
         else
             result = update_result(result, index, s.id, ray_after)
             resize!(result, index)
-            return(RaytraceError(:vignetted, result))
+            return ErrorResult(T, RaytraceError(VignettedError(), result))
         end
     end
     s_last = lens.surfaces[end]
     ray_after = transfer_to_plane(ray_before, s_last.t)
     result = update_result(result, index, s_last.id, ray_after)
-    return result
+    return Result(result)
 end

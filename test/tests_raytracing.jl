@@ -6,7 +6,7 @@
     @testset "paraxial surface x" begin
         lens = Lens(Object(air, 200.0),
                     [
-                        paraxial(150.5, Unlimited(), air, 0)
+                        paraxial(150.5, Unlimited(), air, 0.0)
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
@@ -30,7 +30,7 @@
                         sphere(1/50, Unlimited(), silica, 15.0)
                         even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Unlimited(), air, 35.0)
                         plano(Unlimited(), air, 10.0)
-                        paraxial(-120.3, Unlimited(), air, 30)
+                        paraxial(-120.3, Unlimited(), air, 30.0)
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
@@ -53,6 +53,6 @@
         @test iserror(trace(lens, ray, 1.0, result))
         @test length((unwrap_error(trace(lens, ray, 1.0, result))).data) == 3
         @test (unwrap_error(trace(lens, ray, 1.0, result))).data[end] ≈ Ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
-        @test unwrap_error(trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result)).error_type == :ray_miss
+        @test unwrap_error(trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result)).error_type == RayMissError()
     end
 end

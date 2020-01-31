@@ -2,8 +2,7 @@ module SequentialRaytrace
 
 include("Dispersion.jl")
 include("Ray.jl")
-
-import ResultTypes: Result, ErrorResult, iserror, unwrap, unwrap_error
+include("Errors.jl")
 
 include("Surfaces.jl")
 include("Lens.jl")
@@ -12,7 +11,6 @@ function testlens()
     Lens(Object(air, 200.0),
          [
              sphere(1/50, Unlimited(), silica, 15.0, :first_surface)
-             #= sphere(-1/50, Unlimited(), air, 65) =#
              even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, Unlimited(), air, 65.0)
          ]
          )

@@ -27,7 +27,7 @@ end
 """
 modelled after us_itera.c example from Zemax user defined surface DLLs
 """
-function transfer_to_intersection_evenasphere(ray, s)
+function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}) where T
     t = 100.0
     x = ray.x
     y = ray.y
@@ -37,7 +37,7 @@ function transfer_to_intersection_evenasphere(ray, s)
         p2 = sqrt(x^2 + y^2)
         alpha = 1.0 - (1.0 + s.conic) * s.curvature^2 * p2
         if alpha < 0.0
-            return RaytraceError(:ray_miss, undef)
+            return ErrorResult(Ray{T}, RayMissError())
         end
         sag = sag_evenasphere(p2, s)
         dz = sag - z
@@ -47,11 +47,11 @@ function transfer_to_intersection_evenasphere(ray, s)
         z += ray.cz * t
         loop += 1
         if loop > 1000
-            return RaytraceError(:max_iterations, undef)
+            return ErrorResult(Ray{T}, IntersectionMaxIterationsError(1000))
         end
     end
 
-    Ray(x, y, z, ray.cx, ray.cy, ray.cz)
+    Result(Ray(x, y, z, ray.cx, ray.cy, ray.cz))
 end
 
 function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
@@ -107,7 +107,7 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
     end
     rad = 1 - ((1 - cosi2) * nr^2)
     if rad < 0
-        return RaytraceError(:total_internal_reflection, undef)
+        return ErrorResult(Ray{T}, TotalInternalReflectionError())
     end
     cosr = sqrt(rad)
     gamma = nr * cosi - cosr
@@ -115,10 +115,10 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
     Y = nr * Y + gamma * mn
     Z = nr * Z + gamma * nn
 
-    Ray(x, y, z, X, Y, Z)
+    Result(Ray(x, y, z, X, Y, Z))
 end
 
-function transfer_to_intersection(ray, t, s :: EvenAsphere)
+function transfer_to_intersection(ray :: Ray{T}, t :: T, s :: EvenAsphere{T}) where T
     # propagiere den Strahl erstmal zur sphärischen Grundfläche,
     # was wahrscheinlich ein ganz guter Startwert ist
     # TODO: missing error handling

@@ -2,11 +2,6 @@ export even_asphere, sphere, plano, paraxial, Clear_Diameter, Unlimited
 
 abstract type AbstractSurface end
 
-struct RaytraceError{T} <: Exception
-    error_type :: Symbol
-    data :: T
-end
-
 include("Sphere.jl")
 include("EvenAsphere.jl")
 include("Paraxial.jl")

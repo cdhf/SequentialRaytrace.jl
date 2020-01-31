@@ -11,7 +11,7 @@ end
 
 # Raytrace für sphärische Flächen
 function transfer_to_intersection(ray, t, s :: Paraxial)
-    return(transfer_to_intersection(ray, t, Sphere(0)))
+    return(transfer_to_intersection(ray, t, Sphere(zero(t))))
 end
 
 function refract((ray, E1), m0, s :: Paraxial, m1, wavelength)

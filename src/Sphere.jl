@@ -8,21 +8,21 @@ function sag(x, y, s :: Sphere)
 end
 
 # Raytrace für sphärische Flächen
-function transfer_to_intersection(ray, t, s :: Sphere)
+function transfer_to_intersection(ray :: Ray{T}, t :: T, s :: Sphere{T}) where T
     cv = s.curvature
     e = t * ray.cz - (ray.x * ray.cx + ray.y * ray.cy + ray.z * ray.cz)
     M1z = ray.z + e * ray.cz - t
     M1squared = ray.x^2 + ray.y^2 + ray.z^2 - e^2 + t^2 - 2 * t * ray.z
     E1Arg = ray.cz^2 - cv * (cv * M1squared - 2 * M1z)
     if E1Arg < 0
-        return RaytraceError(:ray_miss, undef)
+        return ErrorResult(Tuple{Ray{T}, T}, RayMissError())
     end
     E1 = sqrt(E1Arg)
     L = e + (cv * M1squared - 2 * M1z) / (ray.cz + E1)
     z1 = ray.z + L * ray.cz - t
     y1 = ray.y + L * ray.cy
     x1 = ray.x + L * ray.cx
-    (Ray(x1, y1, z1, ray.cx, ray.cy, ray.cz), E1)
+    Result((Ray(x1, y1, z1, ray.cx, ray.cy, ray.cz), E1))
 end
 
 function refract((ray, E1), m, s :: Sphere, m1, wavelength)
@@ -35,7 +35,7 @@ function refract((ray, E1), m, s :: Sphere, m1, wavelength)
         n1 = refractive_index(m1, wavelength)
         EprimeArg = 1 - (n0 / n1)^2 * (1 - E1^2)
         if EprimeArg < 0
-            return RaytraceError(:total_internal_reflection, undef)
+            return ErrorResult(Ray{T}, TotalInternalReflectionError())
         end
         Eprime = sqrt(EprimeArg)
         g1 = Eprime - n0 / n1 * E1
@@ -43,10 +43,10 @@ function refract((ray, E1), m, s :: Sphere, m1, wavelength)
         Y1 = n0 / n1 * ray.cy - g1 * s.curvature * ray.y
         X1 = n0 / n1 * ray.cx - g1 * s.curvature * ray.x
     end
-    Ray(ray.x, ray.y, ray.z, X1, Y1, Z1)
+    Result(Ray(ray.x, ray.y, ray.z, X1, Y1, Z1))
 end
 
-function transfer_and_refract(ray, n1, t, s, n2, wavelength) :: Result{Ray, RaytraceError}
+function transfer_and_refract(ray, n1, t, s, n2, wavelength)
     # TODO: make generic and dispatch to transfer_to_intersection and refract
     transfered = transfer_to_intersection(ray, t, s)
     if iserror(transfered)
