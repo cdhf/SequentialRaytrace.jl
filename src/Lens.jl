@@ -1,5 +1,11 @@
 export Lens, Object, trace
 
+abstract type AbstractComponent end
+
+struct OpticalComponent <: AbstractComponent
+    surfaces :: Array{OpticalSurface}
+end
+
 struct Object{T <: Real, M <: AbstractMedium}
     n :: M
     t :: T

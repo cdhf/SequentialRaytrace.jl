@@ -6,23 +6,6 @@ include("Sphere.jl")
 include("EvenAsphere.jl")
 include("Paraxial.jl")
 
-abstract type AbstractAperture end
-
-struct Unlimited <: AbstractAperture end
-
-struct Clear_Diameter{T <: Real} <: AbstractAperture
-    clear_diameter :: T
-end
-
-function is_vignetted(ray, a :: Unlimited)
-    return(false)
-end
-
-function is_vignetted(ray, a :: Clear_Diameter)
-    ray_height = 2 * sqrt(ray.x^2 + ray.y^2)
-    return(ray_height > a.clear_diameter)
-end
-
 struct OpticalSurface{T <: Real, S <: AbstractSurface, M <: AbstractMedium, A <: AbstractAperture}
     surface :: S
     aperture :: A

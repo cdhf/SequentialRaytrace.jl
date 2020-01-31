@@ -3,6 +3,7 @@ module SequentialRaytrace
 include("Dispersion.jl")
 include("Ray.jl")
 include("Errors.jl")
+include("Aperture.jl")
 
 include("Surfaces.jl")
 include("Lens.jl")
