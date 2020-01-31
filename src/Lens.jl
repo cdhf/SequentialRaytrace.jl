@@ -11,9 +11,9 @@ struct Object{T}
     t :: T
 end
 
-struct Lens
-    object :: Object
-    surfaces :: Array{OpticalSurface}
+struct Lens{T <: Real}
+    object :: Object{T}
+    surfaces :: Array{OpticalSurface{T}}
 end
 
 function transfer_to_plane(ray, t)
