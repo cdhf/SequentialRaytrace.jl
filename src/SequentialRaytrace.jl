@@ -31,7 +31,8 @@ function test2()
     change_lens(lens)
     result = gen_result(lens)
     r2 = trace(lens, ray, 1.0, result)
-    (unwrap(r1)[end], unwrap(r2)[end])
+    (r1, r2)
+    # (unwrap(r1)[end], unwrap(r2)[end])
 end
 
 function change_lens(lens)
