@@ -6,7 +6,7 @@
     @testset "paraxial surface x" begin
         lens = Lens(Object(air, 200.0),
                     [
-                        paraxial(150.5, Unlimited(), air, 0.0)
+                        paraxial(150.5, nothing, air, 0.0)
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
@@ -27,10 +27,10 @@
     @testset "without raytracing errors" begin
         lens = Lens(Object(air, 200.0),
                     [
-                        sphere(1/50, Unlimited(), silica, 15.0)
-                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Unlimited(), air, 35.0)
-                        plano(Unlimited(), air, 10.0)
-                        paraxial(-120.3, Unlimited(), air, 30.0)
+                        sphere(1/50, nothing, silica, 15.0)
+                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, air, 35.0)
+                        plano(nothing, air, 10.0)
+                        paraxial(-120.3, nothing, air, 30.0)
                     ]
                     )
         result = SequentialRaytrace.gen_result(lens)
@@ -45,7 +45,7 @@
                     [
                         sphere(1/50, Clear_Diameter(2 * sqrt(40.0^2 + 40.0^2)), silica, 15.0)
                         even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Clear_Diameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
-                        plano(Unlimited(), air, 15.0)
+                        plano(nothing, air, 15.0)
                         plano(Clear_Diameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
                     ]
                     )

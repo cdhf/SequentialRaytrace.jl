@@ -1,15 +1,15 @@
 export even_asphere, sphere, plano, paraxial, Clear_Diameter, Unlimited
 
-abstract type AbstractSurface end
+abstract type AbstractSurface{T <: Real} end
 
 include("Sphere.jl")
 include("EvenAsphere.jl")
 include("Paraxial.jl")
 
-struct OpticalSurface{T <: Real, S <: AbstractSurface, M <: AbstractMedium, A <: AbstractAperture}
-    surface :: S
-    aperture :: A
-    n :: M
+struct OpticalSurface{T <: Real}
+    surface :: AbstractSurface{T}
+    aperture :: Union{Clear_Diameter{T}, Nothing}
+    n :: AbstractMedium{T}
     t :: T
     id :: Union{Symbol, Nothing}
 end

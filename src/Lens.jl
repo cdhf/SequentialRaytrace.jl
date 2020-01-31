@@ -6,8 +6,8 @@ struct OpticalComponent <: AbstractComponent
     surfaces :: Array{OpticalSurface}
 end
 
-struct Object{T <: Real, M <: AbstractMedium}
-    n :: M
+struct Object{T}
+    n :: AbstractMedium{T}
     t :: T
 end
 
