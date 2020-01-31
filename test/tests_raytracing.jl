@@ -7,7 +7,8 @@
         lens = Lens(Object(air, 200.0),
                     [
                         paraxial(150.5, nothing, air, 0.0)
-                    ]
+                    ],
+                    0.0
                     )
         result = SequentialRaytrace.gen_result(lens)
         @test unwrap(trace(lens, ray, 1.0, result))[end] ≈ Ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
@@ -31,7 +32,8 @@
                         even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, air, 35.0)
                         plano(nothing, air, 10.0)
                         paraxial(-120.3, nothing, air, 30.0)
-                    ]
+                    ],
+                    0.0
                     )
         result = SequentialRaytrace.gen_result(lens)
         @test unwrap(trace(lens, ray, 1.0, result))[end] ≈ Ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
@@ -47,7 +49,8 @@
                         even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Clear_Diameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
                         plano(nothing, air, 15.0)
                         plano(Clear_Diameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
-                    ]
+                    ],
+                    0.0
                     )
         result = SequentialRaytrace.gen_result(lens)
         @test iserror(trace(lens, ray, 1.0, result))
