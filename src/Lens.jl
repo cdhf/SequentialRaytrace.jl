@@ -14,7 +14,6 @@ end
 struct Lens{T <: Real}
     object :: Object{T}
     surfaces :: Array{OpticalSurface{T}}
-    imageDist :: T
 end
 
 function transfer_to_plane(ray, t)
