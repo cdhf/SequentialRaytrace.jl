@@ -26,7 +26,7 @@ function gen_result(lens)
 end
 
 function update_result(result :: Array{Ray, 1}, index, _symbol, ray)
-     result[index] = ray
+    result[index] = ray
     return result
 end
 
