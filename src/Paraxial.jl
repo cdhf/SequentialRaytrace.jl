@@ -32,5 +32,5 @@ function refract((ray, E1), m0, s :: Paraxial, m1, wavelength)
     l_prime = ux_prime * n_prime
     m_prime = uy_prime * n_prime
 
-    return(Ray(ray.x, ray.y, ray.z, l_prime, m_prime ,n_prime))
+    Ray(ray.x, ray.y, ray.z, l_prime, m_prime ,n_prime)
 end

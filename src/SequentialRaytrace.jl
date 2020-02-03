@@ -17,6 +17,17 @@ function testlens()
          )
 end
 
+function testray()
+    x = 0.0
+    y = 20.0
+    z = 0.0
+    X = 0.1
+    Y = -0.1
+
+    Z = sqrt(1.0 - X^2 - Y^2)
+    Ray(x, y, z, X, Y, Z)
+end
+
 function test2()
     x = 0.0
     y = 20.0

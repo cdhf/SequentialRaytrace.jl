@@ -15,14 +15,14 @@ function transfer_to_intersection(ray :: Ray{T}, t :: T, s :: Sphere{T}) where T
     M1squared = ray.x^2 + ray.y^2 + ray.z^2 - e^2 + t^2 - 2 * t * ray.z
     E1Arg = ray.cz^2 - cv * (cv * M1squared - 2 * M1z)
     if E1Arg < 0
-        return ErrorResult(Tuple{Ray{T}, T}, RayMissError())
+        return RayMissError()
     end
     E1 = sqrt(E1Arg)
     L = e + (cv * M1squared - 2 * M1z) / (ray.cz + E1)
     z1 = ray.z + L * ray.cz - t
     y1 = ray.y + L * ray.cy
     x1 = ray.x + L * ray.cx
-    Result((Ray(x1, y1, z1, ray.cx, ray.cy, ray.cz), E1))
+    (Ray(x1, y1, z1, ray.cx, ray.cy, ray.cz), E1)
 end
 
 function refract((ray, E1), m, s :: Sphere, m1, wavelength)
@@ -35,7 +35,7 @@ function refract((ray, E1), m, s :: Sphere, m1, wavelength)
         n1 = refractive_index(m1, wavelength)
         EprimeArg = 1 - (n0 / n1)^2 * (1 - E1^2)
         if EprimeArg < 0
-            return ErrorResult(Ray{T}, TotalInternalReflectionError())
+            return TotalInternalReflectionError()
         end
         Eprime = sqrt(EprimeArg)
         g1 = Eprime - n0 / n1 * E1
@@ -43,7 +43,7 @@ function refract((ray, E1), m, s :: Sphere, m1, wavelength)
         Y1 = n0 / n1 * ray.cy - g1 * s.curvature * ray.y
         X1 = n0 / n1 * ray.cx - g1 * s.curvature * ray.x
     end
-    Result(Ray(ray.x, ray.y, ray.z, X1, Y1, Z1))
+    Ray(ray.x, ray.y, ray.z, X1, Y1, Z1)
 end
 
 function transfer_and_refract(ray, n1, t, s, n2, wavelength)
@@ -52,7 +52,7 @@ function transfer_and_refract(ray, n1, t, s, n2, wavelength)
     if iserror(transfered)
         return transfered
     else
-        refracted = refract(unwrap(transfered), n1, s, n2, wavelength)
+        refracted = refract(transfered, n1, s, n2, wavelength)
         return refracted
     end
 end
