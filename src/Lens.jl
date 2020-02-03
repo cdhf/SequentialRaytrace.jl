@@ -42,11 +42,10 @@ function trace(lens, ray, wavelength, result :: T) where T
     result = update_result(result, 1, :object, ray)
     s1 = lens.surfaces[1]
     # TODO: missing error handling
-    wrapped = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
-    if iserror(wrapped)
-        return RaytraceError(wrapped.error_type, result)
+    ray_at_s1 = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
+    if iserror(ray_at_s1)
+        return RaytraceError(ray_at_s1.error_type, result)
     end
-    ray_at_s1 = wrapped
     result = update_result(result, 2, s1.id, ray_at_s1)
 
     ray_before = ray_at_s1
@@ -54,11 +53,10 @@ function trace(lens, ray, wavelength, result :: T) where T
     for i in 2:length(lens.surfaces)
         s_before = lens.surfaces[i-1]
         s = lens.surfaces[i]
-        wrapped = transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength)
-        if iserror(wrapped)
-            return RaytraceError(wrapped, result)
+        ray_after = transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength)
+        if iserror(ray_after)
+            return RaytraceError(ray_after, result)
         end
-        ray_after = wrapped
         if !is_vignetted(ray_after, s.aperture)
             result = update_result(result, index, s.id, ray_after)
             index = index + 1
