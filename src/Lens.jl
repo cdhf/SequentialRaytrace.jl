@@ -25,7 +25,7 @@ function gen_result(lens)
     Array{Ray}(undef, 2 + length(lens.surfaces))
 end
 
-function update_result(result :: Array{Ray, 1}, index, _symbol, ray)
+function update_result!(result :: Array{Ray, 1}, index, _symbol, ray)
     result[index] = ray
     return result
 end
@@ -36,18 +36,22 @@ trace(lens, ray, wavelength, result)
 lens :: Lens
 ray :: Ray
 wavelength :: Real
-result :: something that has an update_result function
+result :: something that has an update_result! function
 """
-function trace(lens, ray, wavelength, result :: T) where T
-    result = update_result(result, 1, :object, ray)
-    s1 = lens.surfaces[1]
-    # TODO: missing error handling
-    ray_at_s1 = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
-    if iserror(ray_at_s1)
-        return RaytraceError(ray_at_s1.error_type, result)
-    end
-    result = update_result(result, 2, s1.id, ray_at_s1)
+function trace(lens, ray, wavelength, result)
+    result = update_result!(result, 1, :object, ray)
 
+    ray_at_s1 = trace_to_s1(lens, ray, wavelength, result)
+    after_surfaces = trace_surfaces(ray_at_s1, lens, wavelength, result)
+    trace_to_image(lens, after_surfaces, result)
+
+end
+
+function trace_surfaces(ray_at_s1 :: RaytraceError, lens, wavelength, result)
+    ray_at_s1
+end
+
+function trace_surfaces(ray_at_s1, lens, wavelength, result)
     ray_before = ray_at_s1
     index = 3
     for i in 2:length(lens.surfaces)
@@ -58,17 +62,37 @@ function trace(lens, ray, wavelength, result :: T) where T
             return RaytraceError(ray_after, result)
         end
         if !is_vignetted(ray_after, s.aperture)
-            result = update_result(result, index, s.id, ray_after)
+            update_result!(result, index, s.id, ray_after)
             index = index + 1
             ray_before = ray_after
         else
-            result = update_result(result, index, s.id, ray_after)
+            update_result!(result, index, s.id, ray_after)
             resize!(result, index)
             return RaytraceError(VignettedError(), result)
         end
     end
     s_last = lens.surfaces[end]
+    (ray_before, index, s_last)
+end
+
+function trace_to_s1(lens, ray, wavelength, result)
+    s1 = lens.surfaces[1]
+    # TODO: missing error handling
+    ray_at_s1 = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
+    if iserror(ray_at_s1)
+        return RaytraceError(ray_at_s1.error_type, result)
+    end
+    update_result!(result, 2, s1.id, ray_at_s1)
+    ray_at_s1
+end
+
+function trace_to_image(lens, after_surfaces, result)
+    (ray_before, index, s_last) = after_surfaces
     ray_after = transfer_to_plane(ray_before, s_last.t)
-    result = update_result(result, index, s_last.id, ray_after)
+    update_result!(result, index, s_last.id, ray_after)
     return result
+end
+
+function trace_to_image(lens, after_surfaces :: RaytraceError, result)
+    after_surfaces
 end
