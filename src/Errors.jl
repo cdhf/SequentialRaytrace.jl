@@ -31,9 +31,9 @@ export iserror
 """
 This is the type returned from a ray trace when an error occured
 """
-struct RaytraceError{E <: AbstractRayError} <: Exception
+struct RaytraceError{D, E <: AbstractRayError} <: Exception
     error_type :: E
-    data
+    data :: D
 end
 
 function iserror(x :: RaytraceError)
