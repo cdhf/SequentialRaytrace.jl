@@ -5,6 +5,16 @@ struct Paraxial{T} <: AbstractSurface{T}
     focal_length :: T
 end
 
+function paraxial(focal_length, aperture, n, t)
+    OpticalSurface(Paraxial(focal_length), aperture, n, t, nothing)
+end
+
+function paraxial(focal_length, aperture, n, t, id)
+    OpticalSurface(Paraxial(focal_length), aperture, n, t, id)
+end
+
+export paraxial
+
 function sag(x, y, s :: Paraxial)
     return(zero(x))
 end

@@ -2,6 +2,8 @@ struct Clear_Diameter{T <: Real}
     clear_diameter :: T
 end
 
+export Clear_Diameter
+
 function is_vignetted(ray :: Ray{T}, aper :: Nothing) where T
     return(false)
 end

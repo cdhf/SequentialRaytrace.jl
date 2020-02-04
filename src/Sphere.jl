@@ -2,13 +2,31 @@ struct Sphere{T} <: AbstractSurface{T}
     curvature :: T
 end
 
+function sphere(curvature, aperture, n, t)
+    OpticalSurface(Sphere(curvature), aperture, n, t, nothing)
+end
+
+function sphere(curvature, aperture, n, t, id)
+    OpticalSurface(Sphere(curvature), aperture, n, t, id)
+end
+
+function plano(aperture, n, t)
+    sphere(0.0, aperture, n, t, nothing)
+end
+
+function plano(aperture, n, t, id)
+    sphere(0.0, aperture, n, t, id)
+end
+
+export sphere, plano
+
 function sag(x, y, s :: Sphere)
     radius2 = x^2 + y^2
     return(s.curvature * radius2 / (1 + sqrt(1 - (s.curvature^2 * radius2))))
 end
 
 # Raytrace für sphärische Flächen
-function transfer_to_intersection(ray :: Ray{T}, t :: T, s :: Sphere{T}) where T
+function transfer_to_intersection(ray, t, s :: Sphere)
     cv = s.curvature
     e = t * ray.cz - (ray.x * ray.cx + ray.y * ray.cy + ray.z * ray.cz)
     M1z = ray.z + e * ray.cz - t
@@ -44,15 +62,4 @@ function refract((ray, E1), m, s :: Sphere, m1, wavelength)
         X1 = n0 / n1 * ray.cx - g1 * s.curvature * ray.x
     end
     Ray(ray.x, ray.y, ray.z, X1, Y1, Z1)
-end
-
-function transfer_and_refract(ray, n1, t, s, n2, wavelength)
-    # TODO: make generic and dispatch to transfer_to_intersection and refract
-    transfered = transfer_to_intersection(ray, t, s)
-    if iserror(transfered)
-        return transfered
-    else
-        refracted = refract(transfered, n1, s, n2, wavelength)
-        return refracted
-    end
 end

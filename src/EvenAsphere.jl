@@ -6,6 +6,15 @@ struct EvenAsphere{T} <: AbstractSurface{T}
     c8 :: T
 end
 
+function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t)
+    OpticalSurface(EvenAsphere(curvature, conic, c4, c6, c8), aperture, n, t, nothing)
+end
+
+function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, id)
+    OpticalSurface(EvenAsphere(curvature, conic, c4, c6, c8), aperture, n, t, id)
+end
+
+export even_asphere
 
 # Raytrace für gerade Asphären
 

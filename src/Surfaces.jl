@@ -1,10 +1,18 @@
-export even_asphere, sphere, plano, paraxial, Clear_Diameter, Unlimited
-
 abstract type AbstractSurface{T <: Real} end
 
-include("Sphere.jl")
-include("EvenAsphere.jl")
-include("Paraxial.jl")
+function transfer_and_refract(ray, n1, t, s :: AbstractSurface, n2, wavelength)
+    transfered = transfer_to_intersection(ray, t, s)
+    if iserror(transfered)
+        return transfered
+    else
+        refracted = refract(transfered, n1, s, n2, wavelength)
+        return refracted
+    end
+end
+
+function transfer_to_intersection(ray, t, s :: AbstractSurface) end
+function refract(transferred, m, s :: AbstractSurface, m1, wavelength) end
+function sag(x, y, s :: AbstractSurface) end
 
 struct OpticalSurface{T <: Real}
     surface :: AbstractSurface{T}
@@ -14,34 +22,7 @@ struct OpticalSurface{T <: Real}
     id :: Union{Symbol, Nothing}
 end
 
-function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t)
-    OpticalSurface(EvenAsphere(curvature, conic, c4, c6, c8), aperture, n, t, nothing)
-end
+include("Sphere.jl")
+include("EvenAsphere.jl")
+include("Paraxial.jl")
 
-function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, id)
-    OpticalSurface(EvenAsphere(curvature, conic, c4, c6, c8), aperture, n, t, id)
-end
-
-function sphere(curvature, aperture, n, t)
-    OpticalSurface(Sphere(curvature), aperture, n, t, nothing)
-end
-
-function sphere(curvature, aperture, n, t, id)
-    OpticalSurface(Sphere(curvature), aperture, n, t, id)
-end
-
-function plano(aperture, n, t)
-    sphere(0.0, aperture, n, t, nothing)
-end
-
-function plano(aperture, n, t, id)
-    sphere(0.0, aperture, n, t, id)
-end
-
-function paraxial(focal_length, aperture, n, t)
-    OpticalSurface(Paraxial(focal_length), aperture, n, t, nothing)
-end
-
-function paraxial(focal_length, aperture, n, t, id)
-    OpticalSurface(Paraxial(focal_length), aperture, n, t, id)
-end
