@@ -1,8 +1,6 @@
 export Lens, Object, trace
 
-abstract type AbstractComponent end
-
-struct OpticalComponent <: AbstractComponent
+struct OpticalComponent
     surfaces :: Array{OpticalSurface}
 end
 
@@ -47,8 +45,8 @@ function trace(lens, ray, wavelength, result)
 
 end
 
-function trace_surfaces(ray_at_s1 :: RaytraceError, lens, wavelength, result)
-    ray_at_s1
+function trace_surfaces(err :: RaytraceError, _lens, _wavelength, _result)
+    err
 end
 
 function trace_surfaces(ray_at_s1, lens, wavelength, result)
@@ -68,7 +66,7 @@ function trace_surfaces(ray_at_s1, lens, wavelength, result)
         else
             update_result!(result, index, s.id, ray_after)
             resize!(result, index)
-            return RaytraceError(VignettedError(), result)
+            return RaytraceError(vignettedError(), result)
         end
     end
     s_last = lens.surfaces[end]
@@ -77,7 +75,6 @@ end
 
 function trace_to_s1(lens, ray, wavelength, result)
     s1 = lens.surfaces[1]
-    # TODO: missing error handling
     ray_at_s1 = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
     if iserror(ray_at_s1)
         return RaytraceError(ray_at_s1.error_type, result)
@@ -86,8 +83,7 @@ function trace_to_s1(lens, ray, wavelength, result)
     ray_at_s1
 end
 
-function trace_to_image(lens, after_surfaces, result)
-    (ray_before, index, s_last) = after_surfaces
+function trace_to_image(lens, (ray_before, index, s_last), result)
     ray_after = transfer_to_plane(ray_before, s_last.t)
     update_result!(result, index, s_last.id, ray_after)
     return result

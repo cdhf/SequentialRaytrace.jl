@@ -3,21 +3,29 @@
 """
 This is the parent type for all basic errors during ray tracing.
 """
-abstract type AbstractRayError <: Exception end
 
-struct RayMissError <: AbstractRayError end
-
-struct TotalInternalReflectionError <: AbstractRayError end
-
-struct IntersectionMaxIterationsError <: AbstractRayError
+struct RayError
+    type :: Symbol
     n_iterations :: Int64
 end
 
-struct VignettedError <: AbstractRayError end
+function rayMissError()
+    RayError(:ray_miss, 0)
+end
 
-export RayMissError, InternalReflectionError, IntersectionMaxIterationsError
+function totalInternalReflectionError()
+    RayError(:total_internal_reflection, 0)
+end
 
-function iserror(x :: AbstractRayError)
+function intersectionMaxIterationsError()
+    RayError(:intersection_max_iterations, 0)
+end
+
+function vignettedError()
+    RayError(:vignetted, 0)
+end
+
+function iserror(x :: RayError)
     true
 end
 
@@ -31,11 +39,15 @@ export iserror
 """
 This is the type returned from a ray trace when an error occured
 """
-struct RaytraceError{D, E <: AbstractRayError} <: Exception
-    error_type :: E
+struct RaytraceError{D} <: Exception
+    error_type :: RayError
     data :: D
 end
 
 function iserror(x :: RaytraceError)
     true
 end
+
+error_type(err :: RaytraceError) = err.error_type.type
+
+export error_type

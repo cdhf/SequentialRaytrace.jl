@@ -54,6 +54,6 @@
         @test length(trace(lens, ray, 1.0, result).data) == 3
         @test trace(lens, ray, 1.0, result).data[end] ≈ Ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
         @test iserror(trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result))
-        @test trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result).error_type == RayMissError()
+        @test error_type(trace(lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result)) === :ray_miss
     end
 end

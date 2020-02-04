@@ -46,7 +46,7 @@ function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}
         p2 = sqrt(x^2 + y^2)
         alpha = 1.0 - (1.0 + s.conic) * s.curvature^2 * p2
         if alpha < 0.0
-            return RayMissError()
+            return rayMissError()
         end
         sag = sag_evenasphere(p2, s)
         dz = sag - z
@@ -56,7 +56,7 @@ function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}
         z += ray.cz * t
         loop += 1
         if loop > 1000
-            return IntersectionMaxIterationsError(1000)
+            return intersectionMaxIterationsError(1000)
         end
     end
 
@@ -85,7 +85,7 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
         alpha0 = 1.0 - (1.0 + k)*cv*cv*r2;
         alpha = 1.0 - (1.0 + k) * cv*cv * r2
         if alpha < 0
-            return RayMissError()
+            return rayMissError()
         end
         alpha = sqrt(alpha)
         mm0 = (cv / (1.0 + alpha))*(2.0 + (cv*cv*r2*(1.0 + k)) / (alpha*(1.0 + alpha)))
@@ -116,7 +116,7 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
     end
     rad = 1 - ((1 - cosi2) * nr^2)
     if rad < 0
-        return TotalInternalReflectionError()
+        return totalInternalReflectionError()
     end
     cosr = sqrt(rad)
     gamma = nr * cosi - cosr
