@@ -1,8 +1,10 @@
 export Lens, Object, trace
 
-struct OpticalComponent
-    surfaces :: Array{OpticalSurface}
+struct OpticalComponent{T <: Real}
+    surfaces :: Vector{OpticalSurface{T}}
 end
+
+export OpticalComponent
 
 struct Object{T}
     n :: AbstractMedium{T}
@@ -11,7 +13,7 @@ end
 
 struct Lens{T <: Real}
     object :: Object{T}
-    surfaces :: Array{OpticalSurface{T}}
+    components :: Vector{OpticalComponent{T}}
 end
 
 function transfer_to_plane(ray, t)
@@ -19,8 +21,10 @@ function transfer_to_plane(ray, t)
     r
 end
 
+n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))
+
 function gen_result(lens)
-    Array{Ray}(undef, 2 + length(lens.surfaces))
+    Array{Ray}(undef, 2 + n_surfaces(lens))
 end
 
 function update_result!(result :: Array{Ray, 1}, index, _symbol, ray)
@@ -39,23 +43,29 @@ result :: something that has an update_result! function
 function trace(lens, ray, wavelength, result)
     result = update_result!(result, 1, :object, ray)
 
-    ray_at_s1 = trace_to_s1(lens, ray, wavelength, result)
-    after_surfaces = trace_surfaces(ray_at_s1, lens, wavelength, result)
+    index = 2
+    n = lens.object.n
+    t = lens.object.t
+    after_surfaces = trace_component(index, ray, n, t, lens.components[1], wavelength, result)
+    for c in lens.components[2:end]
+        if iserror(after_surfaces)
+            return after_surfaces
+        end
+        after_surfaces = trace_component(after_surfaces..., c, wavelength, result)
+    end
+
     trace_to_image(lens, after_surfaces, result)
 
 end
 
-function trace_surfaces(err :: RaytraceError, _lens, _wavelength, _result)
-    err
+function trace_component(index, ray_before, n, t, component, wavelength, result)
+    trace_surfaces(index, ray_before, n, t, component.surfaces, wavelength, result)
 end
 
-function trace_surfaces(ray_at_s1, lens, wavelength, result)
-    ray_before = ray_at_s1
-    index = 3
-    for i in 2:length(lens.surfaces)
-        s_before = lens.surfaces[i-1]
-        s = lens.surfaces[i]
-        ray_after = transfer_and_refract(ray_before, s_before.n, s_before.t, s.surface, s.n, wavelength)
+function trace_surfaces(index, ray_before, n, t, surfaces, wavelength, result)
+    for i in 1:length(surfaces)
+        s = surfaces[i]
+        ray_after = transfer_and_refract(ray_before, n, t, s.surface, s.n, wavelength)
         if iserror(ray_after)
             return RaytraceError(ray_after, result)
         end
@@ -63,29 +73,21 @@ function trace_surfaces(ray_at_s1, lens, wavelength, result)
             update_result!(result, index, s.id, ray_after)
             index = index + 1
             ray_before = ray_after
+            n = s.n
+            t = s.t
         else
             update_result!(result, index, s.id, ray_after)
             resize!(result, index)
             return RaytraceError(vignettedError(), result)
         end
     end
-    s_last = lens.surfaces[end]
-    (ray_before, index, s_last)
+    s_last = surfaces[end]
+    (index, ray_before, s_last.n, s_last.t)
 end
 
-function trace_to_s1(lens, ray, wavelength, result)
-    s1 = lens.surfaces[1]
-    ray_at_s1 = transfer_and_refract(ray, lens.object.n, lens.object.t, s1.surface, s1.n, wavelength)
-    if iserror(ray_at_s1)
-        return RaytraceError(ray_at_s1.error_type, result)
-    end
-    update_result!(result, 2, s1.id, ray_at_s1)
-    ray_at_s1
-end
-
-function trace_to_image(lens, (ray_before, index, s_last), result)
-    ray_after = transfer_to_plane(ray_before, s_last.t)
-    update_result!(result, index, s_last.id, ray_after)
+function trace_to_image(lens, (index, ray_before, last_n, last_t), result)
+    ray_after = transfer_to_plane(ray_before, last_t)
+    update_result!(result, index, :image, ray_after)
     return result
 end
 

@@ -11,8 +11,10 @@ include("Lens.jl")
 function testlens()
     Lens(Object(air, 200.0),
          [
-             sphere(1/50, nothing, silica, 15.0, :first_surface)
-             even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
+             OpticalComponent([
+                 sphere(1/50, nothing, silica, 15.0, :first_surface)
+                 even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
+             ])
          ]
          )
 end
@@ -48,7 +50,7 @@ function test2()
 end
 
 function change_lens(lens)
-    lens.surfaces[1] = sphere(1/40, nothing, silica, 15.0)
+    lens.components[1].surfaces[1] = sphere(1/40, nothing, silica, 15.0)
 end
 
 function test1()
