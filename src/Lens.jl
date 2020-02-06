@@ -46,16 +46,19 @@ function trace(lens, ray, wavelength, result)
     index = 2
     n = lens.object.n
     t = lens.object.t
-    after_surfaces = trace_component(index, ray, n, t, lens.components[1], wavelength, result)
-    for c in lens.components[2:end]
-        if iserror(after_surfaces)
-            return after_surfaces
+
+    if length(lens.components) > 0
+        after_surfaces = trace_component(index, ray, n, t, lens.components[1], wavelength, result)
+        for c in lens.components[2:end]
+            if iserror(after_surfaces)
+                return after_surfaces
+            end
+            after_surfaces = trace_component(after_surfaces..., c, wavelength, result)
         end
-        after_surfaces = trace_component(after_surfaces..., c, wavelength, result)
+        trace_to_image(lens, after_surfaces, result)
+    else
+       result
     end
-
-    trace_to_image(lens, after_surfaces, result)
-
 end
 
 function trace_component(index, ray_before, n, t, component, wavelength, result)
@@ -88,7 +91,7 @@ end
 function trace_to_image(lens, (index, ray_before, last_n, last_t), result)
     ray_after = transfer_to_plane(ray_before, last_t)
     update_result!(result, index, :image, ray_after)
-    return result
+    result
 end
 
 function trace_to_image(lens, after_surfaces :: RaytraceError, result)
