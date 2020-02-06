@@ -53,7 +53,8 @@ function trace(lens, ray, wavelength, result)
             if iserror(after_surfaces)
                 return after_surfaces
             end
-            after_surfaces = trace_component(after_surfaces..., c, wavelength, result)
+            (index, ray_before, n, t) = after_surfaces
+            after_surfaces = trace_component(index, ray_before, n, t, c, wavelength, result)
         end
         trace_to_image(lens, after_surfaces, result)
     else
@@ -72,15 +73,13 @@ function trace_surfaces(index, ray_before, n, t, surfaces, wavelength, result)
         if iserror(ray_after)
             return RaytraceError(ray_after, result)
         end
+        update_result!(result, index, s.id, ray_after)
         if !is_vignetted(ray_after, s.aperture)
-            update_result!(result, index, s.id, ray_after)
             index = index + 1
             ray_before = ray_after
             n = s.n
             t = s.t
         else
-            update_result!(result, index, s.id, ray_after)
-            resize!(result, index)
             return RaytraceError(vignettedError(), result)
         end
     end
