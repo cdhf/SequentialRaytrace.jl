@@ -47,18 +47,23 @@ function trace(lens, ray, wavelength, result)
     n = lens.object.n
     t = lens.object.t
 
-    if length(lens.components) > 0
-        after_surfaces = trace_component(index, ray, n, t, lens.components[1], wavelength, result)
-        for c in lens.components[2:end]
+    after_surfaces = trace_components(index, ray, n, t, lens.components, wavelength, result)
+    trace_to_image(lens, after_surfaces, result)
+end
+
+function trace_components(index, ray, n, t, components, wavelength, result)
+    if length(components) > 0
+        after_surfaces = trace_component(index, ray, n, t, components[1], wavelength, result)
+        for c in components[2:end]
             if iserror(after_surfaces)
                 return after_surfaces
             end
             (index, ray_before, n, t) = after_surfaces
             after_surfaces = trace_component(index, ray_before, n, t, c, wavelength, result)
         end
-        trace_to_image(lens, after_surfaces, result)
+        after_surfaces
     else
-       result
+        result
     end
 end
 
