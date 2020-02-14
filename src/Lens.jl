@@ -27,6 +27,8 @@ function gen_result(lens)
     Array{Ray}(undef, 2 + n_surfaces(lens))
 end
 
+export gen_result
+
 function update_result!(result :: Array{Ray, 1}, index, _symbol, ray)
     result[index] = ray
     return result

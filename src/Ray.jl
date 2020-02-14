@@ -11,17 +11,22 @@ struct Ray{T <: Real}
     cz :: T
 end
 
+# TODO : how to do this as an inner constructor?
+function make_ray(a, b, c, d, e, f)
+    Ray(promote(a, b, c, d, e, f)...)
+end
+
 export Ray
 
 # some other ways to construct Rays
 
 """
-    ray_from_NA(y :: T, NA :: T) :: Ray{T} where T
+    ray_from_NA(y, NA)
 
 Create a Ray in the tangential plane with ray height y and direction cosine in y given by NA
 """
-function ray_from_NA(y :: T, NA :: T) :: Ray{T} where T
-    return Ray(zero(y), y, zero(y), zero(y), NA, (sqrt(1 - NA^2)))
+function ray_from_NA(y, NA)
+    return make_ray(zero(y), y, zero(y), zero(y), NA, (sqrt(1 - NA^2)))
 end
 
 export ray_from_NA
