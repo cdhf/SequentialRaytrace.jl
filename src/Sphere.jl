@@ -2,12 +2,21 @@ struct Sphere{T} <: AbstractSurface{T}
     curvature :: T
 end
 
+function with_fieldtype(t, x :: Sphere)
+    Sphere(convert(t, x.curvature))
+end
+
 function sphere(curvature, aperture, n, t)
     sphere(curvature, aperture, n, t, nothing)
 end
 
 function sphere(curvature, aperture, n, t, id)
-    OpticalSurface(Sphere(curvature), aperture, n, t, id)
+    typ = promote_type(
+        typeof(curvature), 
+        fieldtypes(typeof(aperture))...,
+        fieldtypes(typeof(n))...,
+        typeof(t))
+    OpticalSurface(Sphere(convert(typ, curvature)), with_fieldtype(typ, aperture), with_fieldtype(typ, n), convert(typ, t), id)
 end
 
 function plano(aperture, n, t)

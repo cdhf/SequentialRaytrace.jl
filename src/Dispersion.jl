@@ -1,3 +1,4 @@
+import Base.convert
 
 abstract type AbstractMedium{T <: Real} end
 
@@ -17,6 +18,18 @@ struct Constant_Index{T} <: AbstractMedium{T}
     n :: T
 end
 
+#= function convert(::Type{Constant_Index{T}}, x :: Constant_Index{T}) where T =#
+#=     x =#
+#= end =#
+
+function convert(::Type{Constant_Index{T}}, x :: Constant_Index{R}) where T where R
+    Constant_Index{T}(convert(T, x.n))
+end
+
+function with_fieldtype(t, x :: Constant_Index)
+    convert(Constant_Index{t}, x)
+end
+
 function refractive_index(medium :: Constant_Index{T}, wavelength :: T) where T
     medium.n
 end
@@ -33,6 +46,21 @@ struct Sellmeier_1{T} <: AbstractMedium{T}
     l2 :: T
     k3 :: T
     l3 :: T
+end
+
+function convert(::Type{Sellmeier_1{T}}, x :: Sellmeier_1{R}) where T where R
+    Sellmeier_1{T}(
+        convert(T, x.k1),
+        convert(T, x.l1),
+        convert(T, x.k2),
+        convert(T, x.l2),
+        convert(T, x.k3),
+        convert(T, x.l3),
+        )
+end
+
+function with_fieldtype(t, x :: Sellmeier_1)
+    convert(Sellmeier_1{t}, x)
 end
 
 function refractive_index(medium :: Sellmeier_1{T}, wavelength :: T) where T

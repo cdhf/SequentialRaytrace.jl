@@ -5,6 +5,10 @@ struct Paraxial{T} <: AbstractSurface{T}
     focal_length :: T
 end
 
+function with_fieldtype(t, x :: Paraxial)
+    Paraxial(convert(t, x.focal_length))
+end
+
 function paraxial(focal_length, aperture, n, t)
     OpticalSurface(Paraxial(focal_length), aperture, n, t, nothing)
 end

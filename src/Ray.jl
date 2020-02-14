@@ -16,7 +16,18 @@ function make_ray(a, b, c, d, e, f)
     Ray(promote(a, b, c, d, e, f)...)
 end
 
-export Ray
+function with_fieldtype(t, ray :: Ray)
+    Ray(
+        convert(t, ray.x),
+        convert(t, ray.y),
+        convert(t, ray.z),
+        convert(t, ray.cx),
+        convert(t, ray.cy),
+        convert(t, ray.cz)
+    )
+end
+
+export make_ray
 
 # some other ways to construct Rays
 

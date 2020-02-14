@@ -1,5 +1,3 @@
-export Lens, Object, trace
-
 struct OpticalComponent{T <: Real}
     surfaces :: Vector{OpticalSurface{T}}
 end
@@ -11,10 +9,25 @@ struct Object{T}
     t :: T
 end
 
+function with_fieldtype(t, x :: Object)
+    Object(with_fieldtype(t, x.n,), convert(t, x.t))
+end
+
+export Object
+
 struct Lens{T <: Real}
     object :: Object{T}
     components :: Vector{OpticalComponent{T}}
 end
+
+function make_lens(object, components)
+    typ = promote_type(
+        typeof(object.t),
+        typeof(components[1].surfaces[1].t))
+    Lens(with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
+end
+
+export make_lens
 
 function transfer_to_plane(ray, t)
     (r, e) = transfer_to_intersection(ray, t, Sphere(zero(t)))
@@ -43,13 +56,15 @@ wavelength :: Real
 result :: something that has an update_result! function
 """
 function trace(lens, ray, wavelength, result)
-    result = update_result!(result, 1, :object, ray)
+    wl = convert(typeof(lens.object.t), wavelength)
+    ray_c = with_fieldtype(typeof(lens.object.t), ray)
+    result = update_result!(result, 1, :object, ray_c)
 
     index = 2
     n = lens.object.n
     t = lens.object.t
 
-    after_surfaces = trace_components(index, ray, n, t, lens.components, wavelength, result)
+    after_surfaces = trace_components(index, ray_c, n, t, lens.components, wl, result)
     trace_to_image(lens, after_surfaces, result)
 end
 
@@ -68,6 +83,8 @@ function trace_components(index, ray, n, t, components, wavelength, result)
         result
     end
 end
+
+export trace
 
 function trace_component(index, ray_before, n, t, component, wavelength, result)
     trace_surfaces(index, ray_before, n, t, component.surfaces, wavelength, result)

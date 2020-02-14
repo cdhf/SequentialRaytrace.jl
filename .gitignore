@@ -5,3 +5,9 @@
 /Manifest.toml
 /dev/
 docs/build/
+test/Manifest.toml
+LOG
+TODO
+test/bak.jl
+mytest.jl
+.vscode/tasks.json

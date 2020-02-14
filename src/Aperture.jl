@@ -2,6 +2,10 @@ struct Clear_Diameter{T <: Real}
     clear_diameter :: T
 end
 
+function with_fieldtype(t, x :: Clear_Diameter)
+    Clear_Diameter(convert(t, x.clear_diameter))
+end
+
 export Clear_Diameter
 
 function is_vignetted(ray :: Ray{T}, aper :: Nothing) where T

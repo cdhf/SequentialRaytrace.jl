@@ -1,5 +1,5 @@
-using Test
-using SequentialRaytrace
+using SafeTestsets
 
-include("tests_dispersion.jl")
-include("tests_raytracing.jl")
+@safetestset "Dispersion tests" begin include("tests_dispersion.jl") end
+@safetestset "Raytracing tests" begin include("tests_raytracing.jl") end
+@safetestset "LsqFit tests" begin include("tests_lsqfit.jl") end

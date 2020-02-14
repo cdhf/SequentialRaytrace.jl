@@ -6,12 +6,41 @@ struct EvenAsphere{T} <: AbstractSurface{T}
     c8 :: T
 end
 
+function with_fieldtype(t, x :: EvenAsphere)
+    EvenAsphere(
+        convert(t, x.curvature),
+        convert(t, x.conic),
+        convert(t, x.c4),
+        convert(t, x.c6),
+        convert(t, x.c8),
+    )
+end
+
 function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t)
     even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, nothing)
 end
 
 function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, id)
-    OpticalSurface(EvenAsphere(curvature, conic, c4, c6, c8), aperture, n, t, id)
+    typ = promote_type(
+        typeof(curvature), 
+        typeof(conic),
+        typeof(c4),
+        typeof(c6),
+        typeof(c8),
+        fieldtypes(typeof(aperture))...,
+        fieldtypes(typeof(n))...,
+        typeof(t))
+    OpticalSurface(
+        EvenAsphere(
+            convert(typ, curvature),
+            convert(typ, conic), 
+            convert(typ, c4), 
+            convert(typ, c6), 
+            convert(typ, c8)),
+        with_fieldtype(typ, aperture),
+        with_fieldtype(typ, n), 
+        convert(typ, t),
+        id)
 end
 
 export even_asphere
