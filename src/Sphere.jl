@@ -3,7 +3,7 @@ struct Sphere{T} <: AbstractSurface{T}
 end
 
 function sphere(curvature, aperture, n, t)
-    OpticalSurface(Sphere(curvature), aperture, n, t, nothing)
+    sphere(curvature, aperture, n, t, nothing)
 end
 
 function sphere(curvature, aperture, n, t, id)
@@ -11,7 +11,7 @@ function sphere(curvature, aperture, n, t, id)
 end
 
 function plano(aperture, n, t)
-    sphere(0.0, aperture, n, t, nothing)
+    plano(aperture, n, t, nothing)
 end
 
 function plano(aperture, n, t, id)
