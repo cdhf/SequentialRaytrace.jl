@@ -5,13 +5,16 @@ using LsqFit
 function mylens(imageDist)
     t = typeof(imageDist)
     make_lens(
+        "",
         Object(air, 10.0),
         [
-            OpticalComponent([
-                even_asphere(0, 0, 0, 0, 0, Clear_Diameter(100), silica, 1.5, :S1),
-                plano(nothing, silica, 1.5),
-                sphere(-1.0/98.3, nothing, air, imageDist, :S2)
-            ])
+            OpticalComponent(
+                "",
+                [
+                    even_asphere(0, 0, 0, 0, 0, Clear_Diameter(100), silica, 1.5, :S1),
+                    plano(nothing, silica, 1.5),
+                    sphere(-1.0/98.3, nothing, air, imageDist, :S2)
+                ])
         ]
     )
 end

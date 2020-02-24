@@ -9,9 +9,9 @@ include("Surfaces.jl")
 include("Lens.jl")
 
 function testlens()
-    Lens(Object(air, 200.0),
+    make_lens("", Object(air, 200.0),
          [
-             OpticalComponent([
+             OpticalComponent("", [
                  sphere(1/50, nothing, silica, 15.0, :first_surface)
                  even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
              ])

@@ -7,11 +7,13 @@ using SequentialRaytrace
 
     ray = make_ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "paraxial surface x" begin
-        lens = make_lens(Object(air, 200.0),
-                    [
-                        OpticalComponent([paraxial(150.5, nothing, air, 0.0)])
-                    ]
-                    )
+        lens = make_lens(
+            "",
+            Object(air, 200.0),
+            [
+                OpticalComponent("", [paraxial(150.5, nothing, air, 0.0)])
+            ]
+        )
         result = SequentialRaytrace.gen_result(lens)
         @test trace(lens, ray, 1.0, result)[end] ≈ make_ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
 
@@ -28,18 +30,20 @@ using SequentialRaytrace
 
     ray = make_ray(5.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "without raytracing errors" begin
-        lens = make_lens(Object(air, 200.0),
-                    [
-                        OpticalComponent([
-                            sphere(1/50, nothing, silica, 15.0)
-                            even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, air, 35.0)
-                        ])
-                        , OpticalComponent([
-                            plano(nothing, air, 10.0)
-                            paraxial(-120.3, nothing, air, 30.0)
-                        ])
-                    ]
-                    )
+        lens = make_lens(
+            "",
+            Object(air, 200.0),
+            [
+                OpticalComponent("", [
+                    sphere(1/50, nothing, silica, 15.0)
+                    even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, air, 35.0)
+                ]),
+                OpticalComponent("", [
+                    plano(nothing, air, 10.0)
+                    paraxial(-120.3, nothing, air, 30.0)
+                ])
+            ]
+        )
         result = SequentialRaytrace.gen_result(lens)
         @test trace(lens, ray, 1.0, result)[end] ≈ make_ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
     end
@@ -48,18 +52,21 @@ using SequentialRaytrace
     Y = -0.1
     ray = make_ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "with raytracing errors" begin
-        lens = make_lens(Object(air, 200.0),
+        lens = make_lens(
+            "",
+            Object(air, 200.0),
+            [
+                OpticalComponent(
+                    "",
                     [
-                        OpticalComponent(
-                            [
-                                sphere(1/50, Clear_Diameter(2 * sqrt(40.0^2 + 40.0^2)), silica, 15.0)
-                                even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Clear_Diameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
-                                plano(nothing, air, 15.0)
-                                plano(Clear_Diameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
-                            ]
-                        )
+                        sphere(1/50, Clear_Diameter(2 * sqrt(40.0^2 + 40.0^2)), silica, 15.0)
+                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Clear_Diameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
+                        plano(nothing, air, 15.0)
+                        plano(Clear_Diameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
                     ]
-                    )
+                )
+            ]
+        )
         result = SequentialRaytrace.gen_result(lens)
         @test iserror(trace(lens, ray, 1.0, result))
         @test trace(lens, ray, 1.0, result).data[3] ≈ make_ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001

@@ -1,4 +1,5 @@
 struct OpticalComponent{T <: Real}
+    name :: String
     surfaces :: Vector{OpticalSurface{T}}
 end
 
@@ -16,15 +17,16 @@ end
 export Object
 
 struct Lens{T <: Real}
+    name :: String
     object :: Object{T}
     components :: Vector{OpticalComponent{T}}
 end
 
-function make_lens(object, components)
+function make_lens(name, object, components)
     typ = promote_type(
         typeof(object.t),
         typeof(components[1].surfaces[1].t))
-    Lens(with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
+    Lens(name, with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
 end
 
 export make_lens
