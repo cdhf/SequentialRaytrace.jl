@@ -3,6 +3,16 @@ struct OpticalComponent{T <: Real}
     surfaces :: Vector{OpticalSurface{T}}
 end
 
+function track_length(oc :: OpticalComponent{T}) where T
+    sum(map(s -> s.t, oc.surfaces))
+end
+
+function track_length(os :: Vector{OpticalSurface{T}}) where T
+    sum(map(s -> s.t, os))
+end
+
+export track_length
+
 export OpticalComponent
 
 struct Object{T}
@@ -20,6 +30,10 @@ struct Lens{T <: Real}
     name :: String
     object :: Object{T}
     components :: Vector{OpticalComponent{T}}
+end
+
+function track_length(l :: Lens{T}) where T
+    sum(map(c -> track_length(c), l.components))
 end
 
 function make_lens(name, object, components)
