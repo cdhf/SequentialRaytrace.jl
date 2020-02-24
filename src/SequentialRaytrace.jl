@@ -30,7 +30,7 @@ function testray()
     Ray(x, y, z, X, Y, Z)
 end
 
-function test2()
+function test()
     x = 0.0
     y = 20.0
     z = 0.0
@@ -41,48 +41,16 @@ function test2()
     ray = Ray(x, y, z, X, Y, Z)
     lens = testlens()
     result = gen_result(lens)
-    r1 = trace(lens, ray, 1.0, result)
+    r1 = trace!(result, lens, ray, 1.0)
     change_lens(lens)
     result = gen_result(lens)
-    r2 = trace(lens, ray, 1.0, result)
+    r2 = trace!(result, lens, ray, 1.0)
     (r1, r2)
     # (unwrap(r1)[end], unwrap(r2)[end])
 end
 
 function change_lens(lens)
     lens.components[1].surfaces[1] = sphere(1/40, nothing, silica, 15.0)
-end
-
-function test1()
-    x = 0.0
-    y = 20.0
-    z = 0.0
-    X = 0.1
-    Y = -0.1
-    Z = sqrt(1.0 - X^2 - Y^2)
-    ray = Ray(x, y, z, X, Y, Z)
-    lens = testlens()
-    for i in 1:1_000_000
-        change_lens(lens)
-        result = gen_result(lens)
-        trace(lens, ray, 1.0, result, set_ray)
-    end
-end
-
-function test3()
-    x = 0.0
-    y = 20.0
-    z = 0.0
-    X = 0.1
-    Y = -0.1
-    Z = sqrt(1.0 - X^2 - Y^2)
-    ray = Ray(x, y, z, X, Y, Z)
-    lens = testlens()
-    result = gen_result(lens)
-    for i in 1:1_000_000
-        #change_lens(lens)
-        trace(lens, ray, 1.0, result, set_ray)
-    end
 end
 
 end # module

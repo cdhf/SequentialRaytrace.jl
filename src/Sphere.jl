@@ -12,7 +12,7 @@ end
 
 function sphere(curvature, aperture, n, t, id)
     typ = promote_type(
-        typeof(curvature), 
+        typeof(curvature),
         fieldtypes(typeof(aperture))...,
         fieldtypes(typeof(n))...,
         typeof(t))

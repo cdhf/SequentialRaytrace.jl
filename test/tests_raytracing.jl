@@ -14,11 +14,11 @@ using SequentialRaytrace
                 OpticalComponent("", [paraxial(150.5, nothing, air, 0.0)])
             ]
         )
-        result = SequentialRaytrace.gen_result(lens)
-        @test trace(lens, ray, 1.0, result)[end] ≈ make_ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
+        result = gen_result(lens)
+        @test trace!(result, lens, ray, 1.0)[end] ≈ make_ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
 
         ray2 = ray_from_NA(0.0, 0.1)
-        r = trace(lens, ray2, 1.0, result)
+        r = trace!(result, lens, ray2, 1.0)
         @test r[end] ≈ make_ray(0.0, 20.100756305, 0.0, 0.0, -0.0330380156, 0.9994540958) atol=0.000000001
         y = r[end].y
         cy = r[end].cy
@@ -44,8 +44,8 @@ using SequentialRaytrace
                 ])
             ]
         )
-        result = SequentialRaytrace.gen_result(lens)
-        @test trace(lens, ray, 1.0, result)[end] ≈ make_ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
+        result = gen_result(lens)
+        @test trace!(result, lens, ray, 1.0)[end] ≈ make_ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
     end
 
     X = 0.1
@@ -67,11 +67,11 @@ using SequentialRaytrace
                 )
             ]
         )
-        result = SequentialRaytrace.gen_result(lens)
-        @test iserror(trace(lens, ray, 1.0, result))
-        @test trace(lens, ray, 1.0, result).data[3] ≈ make_ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
-        @test !isassigned(trace(lens, ray, 1.0, result).data, 4)
-        @test iserror(trace(lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result))
-        @test error_type(trace(lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0, result)) === :ray_miss
+        result = gen_result(lens)
+        @test iserror(trace!(result, lens, ray, 1.0))
+        @test trace!(result, lens, ray, 1.0).data[3] ≈ make_ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
+        @test !isassigned(trace!(result, lens, ray, 1.0).data, 4)
+        @test iserror(trace!(result, lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0))
+        @test error_type(trace!(result, lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0)) === :ray_miss
     end
 end

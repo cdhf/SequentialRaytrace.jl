@@ -25,7 +25,7 @@ function model(x, p)
     testray = ray_from_NA(0.0, 0.125)
     lens = mylens(imageDist)
     result = gen_result(lens)
-    r = trace(lens, testray, 1.0, result)
+    r = trace!(result, lens, testray, 1.0)
     r[end].y
 end
 

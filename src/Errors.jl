@@ -38,9 +38,13 @@ export iserror
 
 """
 This is the type returned from a ray trace when an error occured
+error_type is the actual RayError with any additional specific information
+surface_index is the index of the surface that the error occured at
+data is the ray trace result up to this point
 """
 struct RaytraceError{D} <: Exception
     error_type :: RayError
+    surface_index :: Int64 # index
     data :: D
 end
 

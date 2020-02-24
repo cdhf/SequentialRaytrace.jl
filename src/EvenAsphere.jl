@@ -123,9 +123,9 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
         mm += 6 * s.c6 * r2^(6/2 - 1)
         mm += 8 * s.c8 * r2^(8/2 - 1)
 
-        mm0 += 4.0 * s.c4 * r2;
-        mm0 += 6.0 * s.c6 * r2 * r2;
-        mm0 += 8.0 * s.c8 * r2 * r2 * r2;
+        mm0 += 4 * s.c4 * r2;
+        mm0 += 6 * s.c6 * r2 * r2;
+        mm0 += 8 * s.c8 * r2 * r2 * r2;
 
         mx = x * mm
         my = y * mm
