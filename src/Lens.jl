@@ -11,6 +11,21 @@ function track_length(os :: Vector{OpticalSurface{T}}) where T
     sum(map(s -> s.t, os))
 end
 
+function track_length(os :: Vector{OpticalSurface{T}}, id :: Symbol) where T
+    l = zero(T)
+    for s in os
+        l += s.t
+        if s.id == id
+            return l
+        end
+    end
+    nothing
+end
+
+function track_length(c :: OpticalComponent{T}, id :: Symbol) where T
+    track_length(c.surfaces, id)
+end
+
 export track_length
 
 export OpticalComponent
