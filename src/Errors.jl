@@ -1,37 +1,37 @@
-# import ResultTypes: Result, ErrorResult, iserror, unwrap, unwrap_error
-
 """
 This is the parent type for all basic errors during ray tracing.
+The type field describes the type of error.
+If the maximum number of iterations to find a surface intersection
+was too large, n_iterations contains the number of iterations.
 """
-
 struct RayError
     type :: Symbol
     n_iterations :: Int64
 end
 
+
 function rayMissError()
     RayError(:ray_miss, 0)
 end
+
 
 function totalInternalReflectionError()
     RayError(:total_internal_reflection, 0)
 end
 
+
 function intersectionMaxIterationsError()
     RayError(:intersection_max_iterations, 0)
 end
+
 
 function vignettedError()
     RayError(:vignetted, 0)
 end
 
-function iserror(x :: RayError)
-    true
-end
 
-function iserror(x)
-    false
-end
+iserror(x :: RayError) = true
+iserror(x) = false
 
 export iserror
 
@@ -53,5 +53,3 @@ function iserror(x :: RaytraceError)
 end
 
 error_type(err :: RaytraceError) = err.error_type.type
-
-export error_type

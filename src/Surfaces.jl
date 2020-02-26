@@ -1,4 +1,16 @@
+"""
+This is the parent type for all surfaces. Surfaces
+are purely a geometrical abstraction.
+"""
 abstract type AbstractSurface{T <: Real} end
+
+abstract type AbstractRotationalSymmetricSurface{T} <: AbstractSurface{T} end
+
+function sag(x, y, s :: AbstractRotationalSymmetricSurface)
+    radius = sqrt(x^2 + y^2)
+    return(sag(radius, s))
+end
+
 
 function transfer_and_refract(ray, n1, t, s :: AbstractSurface, n2, wavelength)
     transfered = transfer_to_intersection(ray, t, s)
@@ -10,11 +22,6 @@ function transfer_and_refract(ray, n1, t, s :: AbstractSurface, n2, wavelength)
     end
 end
 
-function transfer_to_intersection(ray, t, s :: AbstractSurface) end
-function refract(transferred, m, s :: AbstractSurface, m1, wavelength) end
-function sag(x, y, s :: AbstractSurface) end
-
-import Base: promote_rule, convert
 
 struct OpticalSurface{T <: Real}
     surface :: AbstractSurface{T}
@@ -24,11 +31,12 @@ struct OpticalSurface{T <: Real}
     id :: Union{Symbol, Nothing}
 end
 
+
 promote_rule(::Type{OpticalSurface{T1}}, ::Type{OpticalSurface{T2}}) where T1 where T2 = OpticalSurface{promote_type(T1, T2)}
 
-function with_fieldtype(t, :: Nothing)
-    nothing
-end
+
+with_fieldtype(t, :: Nothing) = nothing
+
 
 function convert(::Type{OpticalSurface{T}}, x :: OpticalSurface) where T
     OpticalSurface(
@@ -39,8 +47,3 @@ function convert(::Type{OpticalSurface{T}}, x :: OpticalSurface) where T
         x.id
     )
 end
-
-include("Sphere.jl")
-include("EvenAsphere.jl")
-include("Paraxial.jl")
-

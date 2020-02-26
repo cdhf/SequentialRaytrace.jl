@@ -1,6 +1,5 @@
-import Base.convert
-
 abstract type AbstractMedium{T <: Real} end
+
 
 """
     refractive_index(medium :: AbstractMedium{T}, wavelength :: T) where T
@@ -9,7 +8,6 @@ Return the refractive index of medium at the given wavelength in μm.
 """
 function refractive_index end
 
-export refractive_index
 
 """
 Definition of a medium with no dispersion.
@@ -18,17 +16,16 @@ struct Constant_Index{T} <: AbstractMedium{T}
     n :: T
 end
 
-#= function convert(::Type{Constant_Index{T}}, x :: Constant_Index{T}) where T =#
-#=     x =#
-#= end =#
 
 function convert(::Type{Constant_Index{T}}, x :: Constant_Index{R}) where T where R
     Constant_Index{T}(convert(T, x.n))
 end
 
+
 function with_fieldtype(t, x :: Constant_Index)
     convert(Constant_Index{t}, x)
 end
+
 
 function refractive_index(medium :: Constant_Index{T}, wavelength :: T) where T
     medium.n
@@ -47,6 +44,7 @@ struct Sellmeier_1{T} <: AbstractMedium{T}
     k3 :: T
     l3 :: T
 end
+
 
 function convert(::Type{Sellmeier_1{T}}, x :: Sellmeier_1{R}) where T where R
     Sellmeier_1{T}(
@@ -71,17 +69,21 @@ function refractive_index(medium :: Sellmeier_1{T}, wavelength :: T) where T
     sqrt(a + b + c + 1)
 end
 
+
+#
 # Definition of a few materials
+#
+
+
 """
 Silica dispersion. Coefficients as in Zemax.
 """
 const silica = Sellmeier_1(6.96166300e-1, 4.67914800e-3, 4.07942600e-1, 1.35120600e-2, 8.974794e-1, 9.7934e+1)
-export silica
+
 
 """
 The refractive index of air is defined to be 1.0 at all wavelengths. This follows the usual
 convention to use refractive indices which are relative to air.
 """
 const air = Constant_Index(1.0)
-export air
 

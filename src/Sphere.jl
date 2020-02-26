@@ -1,16 +1,12 @@
-struct Sphere{T} <: AbstractSurface{T}
+struct Sphere{T} <: AbstractRotationalSymmetricSurface{T}
     curvature :: T
 end
 
-function with_fieldtype(t, x :: Sphere)
-    Sphere(convert(t, x.curvature))
-end
 
-function sphere(curvature, aperture, n, t)
-    sphere(curvature, aperture, n, t, nothing)
-end
+with_fieldtype(t, x :: Sphere) = Sphere(convert(t, x.curvature))
 
-function sphere(curvature, aperture, n, t, id)
+
+function sphere(curvature, aperture, n, t, id = nothing)
     typ = promote_type(
         typeof(curvature),
         fieldtypes(typeof(aperture))...,
@@ -19,18 +15,11 @@ function sphere(curvature, aperture, n, t, id)
     OpticalSurface(Sphere(convert(typ, curvature)), with_fieldtype(typ, aperture), with_fieldtype(typ, n), convert(typ, t), id)
 end
 
-function plano(aperture, n, t)
-    plano(aperture, n, t, nothing)
-end
 
-function plano(aperture, n, t, id)
-    sphere(0.0, aperture, n, t, id)
-end
+plano(aperture, n, t, id = nothing) = sphere(0.0, aperture, n, t, id)
 
-export sphere, plano
-
-function sag(x, y, s :: Sphere)
-    radius2 = x^2 + y^2
+function sag(radius, s :: Sphere)
+    radius2 = radius^2
     return(s.curvature * radius2 / (1 + sqrt(1 - (s.curvature^2 * radius2))))
 end
 

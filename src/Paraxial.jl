@@ -5,28 +5,30 @@ struct Paraxial{T} <: AbstractSurface{T}
     focal_length :: T
 end
 
+
 function with_fieldtype(t, x :: Paraxial)
     Paraxial(convert(t, x.focal_length))
 end
 
-function paraxial(focal_length, aperture, n, t)
-    OpticalSurface(Paraxial(focal_length), aperture, n, t, nothing)
-end
 
-function paraxial(focal_length, aperture, n, t, id)
+paraxial(focal_length, aperture, n, t, id = nothing) =
     OpticalSurface(Paraxial(focal_length), aperture, n, t, id)
+
+
+function sag(radius, s :: Paraxial)
+    return(zero(x))
 end
 
-export paraxial
 
 function sag(x, y, s :: Paraxial)
     return(zero(x))
 end
 
-# Raytrace für sphärische Flächen
+
 function transfer_to_intersection(ray, t, s :: Paraxial)
     return(transfer_to_intersection(ray, t, Sphere(zero(t))))
 end
+
 
 function refract((ray, E1), m0, s :: Paraxial, m1, wavelength)
     l = ray.cx

@@ -1,10 +1,11 @@
-struct EvenAsphere{T} <: AbstractSurface{T}
+struct EvenAsphere{T} <: AbstractRotationalSymmetricSurface{T}
     curvature :: T
     conic :: T
     c4 :: T
     c6 :: T
     c8 :: T
 end
+
 
 function with_fieldtype(t, x :: EvenAsphere)
     EvenAsphere(
@@ -16,11 +17,9 @@ function with_fieldtype(t, x :: EvenAsphere)
     )
 end
 
-function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t)
-    even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, nothing)
-end
 
-function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, id)
+function even_asphere(
+    curvature, conic, c4, c6, c8, aperture, n, t, id = nothing)
     typ = promote_type(
         typeof(curvature), 
         typeof(conic),
@@ -43,28 +42,14 @@ function even_asphere(curvature, conic, c4, c6, c8, aperture, n, t, id)
         id)
 end
 
-export even_asphere
-
-# Raytrace für gerade Asphären
-
-"""
-Even asphere sag
-"""
-function sag_evenasphere(radial_dist, s)
+function sag(radial_dist, s :: EvenAsphere)
     z = s.curvature * radial_dist^2 / abs(1 + sqrt(1 - s.curvature^2 * radial_dist^2))
     z = z + s.c4 * radial_dist^4
     z = z + s.c6 * radial_dist^6
     return(z + s.c8 * radial_dist^8)
 end
 
-function sag(x, y, s :: EvenAsphere)
-    radius = sqrt(x^2 + y^2)
-    return(sag_evenasphere(radius, s))
-end
-
-"""
-modelled after us_itera.c example from Zemax user defined surface DLLs
-"""
+# modelled after us_itera.c example from Zemax user defined surface DLLs
 function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}) where T
     t = 100.0
     x = ray.x
@@ -77,8 +62,8 @@ function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}
         if alpha < 0.0
             return rayMissError()
         end
-        sag = sag_evenasphere(p2, s)
-        dz = sag - z
+        sg = sag(p2, s)
+        dz = sg - z
         t = dz / ray.cz
         x += ray.cx * t
         y += ray.cy * t
@@ -91,6 +76,7 @@ function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}
 
     Ray(x, y, z, ray.cx, ray.cy, ray.cz)
 end
+
 
 function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
     if m0 == m1
@@ -155,6 +141,7 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
 
     Ray(x, y, z, X, Y, Z)
 end
+
 
 function transfer_to_intersection(ray :: Ray{T}, t :: T, s :: EvenAsphere{T}) where T
     # propagiere den Strahl erstmal zur sphärischen Grundfläche,

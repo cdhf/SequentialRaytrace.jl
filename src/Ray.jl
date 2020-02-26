@@ -11,10 +11,17 @@ struct Ray{T <: Real}
     cz :: T
 end
 
+
 # TODO : how to do this as an inner constructor?
+"""
+    make_ray(x, y, z, cx, cy, cz)
+
+Return a Ray object. The fields are the coordinates and the direction cosines
+"""
 function make_ray(a, b, c, d, e, f)
     Ray(promote(a, b, c, d, e, f)...)
 end
+
 
 function with_fieldtype(t, ray :: Ray)
     Ray(
@@ -27,9 +34,6 @@ function with_fieldtype(t, ray :: Ray)
     )
 end
 
-export make_ray
-
-# some other ways to construct Rays
 
 """
     ray_from_NA(y, NA)
@@ -40,12 +44,8 @@ function ray_from_NA(y, NA)
     return make_ray(zero(y), y, zero(y), zero(y), NA, (sqrt(1 - NA^2)))
 end
 
-export ray_from_NA
-
-# extend ≈ operator
-import Base
-
-function Base.isapprox(ray1 :: Ray, ray2 :: Ray; kwargs...)
+# extends ≈ operator
+function isapprox(ray1 :: Ray, ray2 :: Ray; kwargs...)
     isapprox(ray1.x, ray2.x; kwargs...) &&
         isapprox(ray1.y, ray2.y; kwargs...) &&
         isapprox(ray1.z, ray2.z; kwargs...) &&
@@ -53,5 +53,3 @@ function Base.isapprox(ray1 :: Ray, ray2 :: Ray; kwargs...)
         isapprox(ray1.cy, ray2.cy; kwargs...) &&
         isapprox(ray1.cz, ray2.cz; kwargs...)
 end
-
-
