@@ -87,7 +87,7 @@ wavelength :: Real
 result :: something that has an update_result! function
 ignore_apertures :: Bool
 """
-function trace!(result, lens, ray, wavelength, ignore_apertures = false)
+function trace!(result, lens, ray, wavelength; ignore_apertures = false)
     wl = convert(typeof(lens.object.t), wavelength)
     ray_c = with_fieldtype(typeof(lens.object.t), ray)
     result = update_result!(result, 1, :object, ray_c)
