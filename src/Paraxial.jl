@@ -11,8 +11,17 @@ function with_fieldtype(t, x :: Paraxial)
 end
 
 
-paraxial(focal_length, aperture, n, t, id = nothing) =
-    OpticalSurface(Paraxial(focal_length), aperture, n, t, id)
+function paraxial(focal_length, aperture, n, t, id = nothing)
+    typ = promote_type(typeof(focal_length),
+                       fieldtypes(typeof(aperture))...,
+                       fieldtypes(typeof(n))...,
+                       typeof(t))
+    OpticalSurface(Paraxial(convert(typ, focal_length)),
+                   with_fieldtype(typ, aperture),
+                   with_fieldtype(typ, n),
+                   convert(typ, t),
+                   id)
+end
 
 
 function sag(radius, s :: Paraxial)

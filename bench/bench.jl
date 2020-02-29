@@ -1,9 +1,9 @@
 using SequentialRaytrace
 
 function testlens()
-    make_lens("", Object(air, 200.0),
+    make_lens("", object(air, 200.0),
          [
-             OpticalComponent("", [
+             opticalComponent("", [
                  sphere(1/50, nothing, silica, 15.0, :first_surface)
                  even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
              ])
@@ -19,7 +19,7 @@ function testray()
     Y = -0.1
 
     Z = sqrt(1.0 - X^2 - Y^2)
-    Ray(x, y, z, X, Y, Z)
+    make_ray(x, y, z, X, Y, Z)
 end
 
 function test()
@@ -30,7 +30,7 @@ function test()
     Y = -0.1
 
     Z = sqrt(1.0 - X^2 - Y^2)
-    ray = Ray(x, y, z, X, Y, Z)
+    ray = make_ray(x, y, z, X, Y, Z)
     lens = testlens()
     result = gen_result(lens)
     r1 = trace!(result, lens, ray, 1.0)

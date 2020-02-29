@@ -6,9 +6,9 @@ function mylens(imageDist)
     t = typeof(imageDist)
     make_lens(
         "",
-        Object(air, 10.0),
+        object(air, 10.0),
         [
-            OpticalComponent(
+            opticalComponent(
                 "",
                 [
                     even_asphere(0, 0, 0, 0, 0, Clear_Diameter(100), silica, 1.5, :S1),

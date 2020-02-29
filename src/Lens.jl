@@ -3,6 +3,8 @@ struct OpticalComponent{T <: Real}
     surfaces :: Vector{OpticalSurface{T}}
 end
 
+opticalComponent(name, surfaces) = OpticalComponent(name, surfaces)
+
 function track_length(oc :: OpticalComponent{T}) where T
     sum(map(s -> s.t, oc.surfaces))
 end
@@ -26,20 +28,30 @@ function track_length(c :: OpticalComponent{T}, id :: Symbol) where T
     track_length(c.surfaces, id)
 end
 
-export track_length
-
-export OpticalComponent
 
 struct Object{T}
     n :: AbstractMedium{T}
     t :: T
 end
 
+function object(n, t)
+    typ = promote_type(fieldtypes(typeof(n))...,
+                      typeof(t))
+    Object(with_fieldtype(typ, n), convert(typ, t))
+end
+
 function with_fieldtype(t, x :: Object)
     Object(with_fieldtype(t, x.n,), convert(t, x.t))
 end
 
-export Object
+promote_rule(::Type{Object{T1}}, ::Type{Object{T2}}) where T1 where T2 = Object{promote_type(T1, T2)}
+
+function convert(::Type{Object{T}}, x :: Object) where T
+    Object(
+        with_fieldtype(T, x.n),
+        convert(T, x.t)
+    )
+end
 
 struct Lens{T <: Real}
     name :: String
@@ -58,7 +70,6 @@ function make_lens(name, object, components)
     Lens(name, with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
 end
 
-export make_lens
 
 function transfer_to_plane(ray, t)
     (r, e) = transfer_to_intersection(ray, t, Sphere(zero(t)))
@@ -71,7 +82,6 @@ function gen_result(lens)
     Array{Ray}(undef, 2 + n_surfaces(lens))
 end
 
-export gen_result
 
 function update_result!(result :: Array{Ray, 1}, index, _symbol, ray)
     result[index] = ray
@@ -116,7 +126,6 @@ function trace_components!(result, index, ray, n, t, components, wavelength, ign
     end
 end
 
-export trace!
 
 function trace_component!(result, index, ray_before, n, t, component, wavelength, ignore_apertures)
     trace_surfaces!(result, index, ray_before, n, t, component.surfaces, wavelength, ignore_apertures)

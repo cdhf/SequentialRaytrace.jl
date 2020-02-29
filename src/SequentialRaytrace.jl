@@ -18,7 +18,7 @@ include("Surfaces.jl")
 export sag
 
 include("Sphere.jl")
-export sphere, plano
+export plano, sphere
 
 include("EvenAsphere.jl")
 export even_asphere
@@ -27,5 +27,7 @@ include("Paraxial.jl")
 export paraxial
 
 include("Lens.jl")
+export gen_result, make_lens, object, opticalComponent
+export track_length, trace!
 
 end # module
