@@ -6,7 +6,7 @@ was too large, n_iterations contains the number of iterations.
 """
 struct RayError
     type :: Symbol
-    n_iterations :: Int64
+    n_iterations :: Integer
 end
 
 
@@ -44,7 +44,7 @@ data is the ray trace result up to this point
 """
 struct RaytraceError{D} <: Exception
     error_type :: RayError
-    surface_index :: Int64 # index
+    surface_index :: Integer # index
     data :: D
 end
 

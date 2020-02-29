@@ -44,8 +44,6 @@ function with_fieldtype(t, x :: Object)
     Object(with_fieldtype(t, x.n,), convert(t, x.t))
 end
 
-promote_rule(::Type{Object{T1}}, ::Type{Object{T2}}) where T1 where T2 = Object{promote_type(T1, T2)}
-
 function convert(::Type{Object{T}}, x :: Object) where T
     Object(
         with_fieldtype(T, x.n),
