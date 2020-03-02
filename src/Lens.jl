@@ -3,6 +3,15 @@ struct OpticalComponent{T <: Real}
     surfaces :: Vector{OpticalSurface{T}}
 end
 
+promote_rule(::Type{OpticalComponent{T1}}, ::Type{OpticalComponent{T2}}) where T1 where T2 = OpticalComponent{promote_type(T1, T2)}
+
+function convert(::Type{OpticalComponent{T}}, x :: OpticalComponent) where T
+    OpticalComponent(
+        x.name,
+        Vector{OpticalSurface{T}}(x.surfaces)
+    )
+end
+
 opticalComponent(name, surfaces) = OpticalComponent(name, surfaces)
 
 function track_length(oc :: OpticalComponent{T}) where T
@@ -123,7 +132,6 @@ function trace_components!(result, index, ray, n, t, components, wavelength, ign
         result
     end
 end
-
 
 function trace_component!(result, index, ray_before, n, t, component, wavelength, ignore_apertures)
     trace_surfaces!(result, index, ray_before, n, t, component.surfaces, wavelength, ignore_apertures)
