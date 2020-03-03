@@ -85,11 +85,16 @@ end
 
 n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))
 
-function gen_result(lens)
+"""
+Rreallocate a result for trace!
+"""
+function gen_result(::Type{Array{Ray, 1}}, lens)
     Array{Ray}(undef, 2 + n_surfaces(lens))
 end
 
-
+"""
+Update a result with data from ray tracing and return it
+"""
 function update_result!(result :: Array{Ray, 1}, index, _symbol, ray)
     result[index] = ray
     return result
@@ -144,7 +149,7 @@ function trace_surfaces!(result, index, ray_before, n, t, surfaces, wavelength, 
         if iserror(ray_after)
             return RaytraceError(ray_after, index, result)
         end
-        update_result!(result, index, s.id, ray_after)
+        result = update_result!(result, index, s.id, ray_after)
         if ignore_apertures || !is_vignetted(ray_after, s.aperture)
             index = index + 1
             ray_before = ray_after
@@ -161,7 +166,6 @@ end
 function trace_to_image!(result, lens, (index, ray_before, last_n, last_t))
     ray_after = transfer_to_plane(ray_before, last_t)
     update_result!(result, index, :image, ray_after)
-    result
 end
 
 function trace_to_image!(result, lens, after_surfaces :: RaytraceError)

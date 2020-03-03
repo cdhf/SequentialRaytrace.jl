@@ -6,7 +6,7 @@ include("Dispersion.jl")
 export Constant_Index, Sellmeier_1, air, silica, refractive_index
 
 include("Ray.jl")
-export make_ray, ray_from_NA
+export make_ray, ray_from_NA, Ray
 
 include("Errors.jl")
 export error_type

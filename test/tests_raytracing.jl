@@ -14,7 +14,7 @@ using SequentialRaytrace
                 opticalComponent("", [paraxial(150.5, nothing, air, 0.0)])
             ]
         )
-        result = gen_result(lens)
+        result = gen_result(Vector{Ray}, lens)
         @test trace!(result, lens, ray, 1.0)[end] ≈ make_ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
 
         ray2 = ray_from_NA(0.0, 0.1)
@@ -44,7 +44,7 @@ using SequentialRaytrace
                 ])
             ]
         )
-        result = gen_result(lens)
+        result = gen_result(Vector{Ray}, lens)
         @test trace!(result, lens, ray, 1.0)[end] ≈ make_ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
     end
 
@@ -67,7 +67,7 @@ using SequentialRaytrace
                 )
             ]
         )
-        result = gen_result(lens)
+        result = gen_result(Vector{Ray}, lens)
         @test iserror(trace!(result, lens, ray, 1.0))
         @test trace!(result, lens, ray, 1.0).data[3] ≈ make_ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
         @test !isassigned(trace!(result, lens, ray, 1.0).data, 4)
