@@ -1,5 +1,5 @@
 struct OpticalComponent{T <: Real}
-    name :: String
+    name :: Any
     surfaces :: Vector{OpticalSurface{T}}
 end
 
@@ -61,7 +61,7 @@ function convert(::Type{Object{T}}, x :: Object) where T
 end
 
 struct Lens{T <: Real}
-    name :: String
+    name :: Any
     object :: Object{T}
     components :: Vector{OpticalComponent{T}}
 end
