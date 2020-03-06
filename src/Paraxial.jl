@@ -39,15 +39,15 @@ function transfer_to_intersection(ray, t, s :: Paraxial)
 end
 
 
-function refract((ray, E1), m0, s :: Paraxial, m1, wavelength)
+function refract((ray, E1), m0, s :: Paraxial, m1, λ)
     l = ray.cx
     m = ray.cy
     n = ray.cz
     ux = l / n
     uy = m / n
 
-    n0 = refractive_index(m0, wavelength)
-    n1 = refractive_index(m1, wavelength)
+    n0 = refractive_index(m0, λ)
+    n1 = refractive_index(m1, λ)
     phi = one(s.focal_length) / s.focal_length
 
     ux_prime = (n0 * ux - ray.x * phi) / n1

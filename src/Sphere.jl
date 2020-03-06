@@ -41,14 +41,14 @@ function transfer_to_intersection(ray, t, s :: Sphere)
     (Ray(x1, y1, z1, ray.cx, ray.cy, ray.cz), E1)
 end
 
-function refract((ray, E1), m, s :: Sphere, m1, wavelength)
+function refract((ray, E1), m, s :: Sphere, m1, λ)
     if m == m1
         X1 = ray.cx
         Y1 = ray.cy
         Z1 = ray.cz
     else
-        n0 = refractive_index(m, wavelength)
-        n1 = refractive_index(m1, wavelength)
+        n0 = refractive_index(m, λ)
+        n1 = refractive_index(m1, λ)
         EprimeArg = 1 - (n0 / n1)^2 * (1 - E1^2)
         if EprimeArg < 0
             return totalInternalReflectionError()

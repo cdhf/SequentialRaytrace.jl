@@ -2,7 +2,7 @@ abstract type AbstractMedium{T <: Real} end
 
 
 """
-    refractive_index(medium :: AbstractMedium{T}, wavelength :: T) where T
+    refractive_index(medium :: AbstractMedium{T}, λ :: T) where T
 
 Return the refractive index of medium at the given wavelength in μm.
 """
@@ -27,7 +27,7 @@ function with_fieldtype(t, x :: Constant_Index)
 end
 
 
-function refractive_index(medium :: Constant_Index{T}, wavelength :: T) where T
+function refractive_index(medium :: Constant_Index{T}, λ :: T) where T
     medium.n
 end
 
@@ -61,11 +61,11 @@ function with_fieldtype(t, x :: Sellmeier_1)
     convert(Sellmeier_1{t}, x)
 end
 
-function refractive_index(medium :: Sellmeier_1{T}, wavelength :: T) where T
-    lsquared = wavelength^2
-    a = medium.k1 * lsquared / (lsquared - medium.l1)
-    b = medium.k2 * lsquared / (lsquared - medium.l2)
-    c = medium.k3 * lsquared / (lsquared - medium.l3)
+function refractive_index(medium :: Sellmeier_1{T}, λ :: T) where T
+    λ2 = λ^2
+    a = medium.k1 * λ2 / (λ2 - medium.l1)
+    b = medium.k2 * λ2 / (λ2 - medium.l2)
+    c = medium.k3 * λ2 / (λ2 - medium.l3)
     sqrt(a + b + c + 1)
 end
 
@@ -86,4 +86,3 @@ The refractive index of air is defined to be 1.0 at all wavelengths. This follow
 convention to use refractive indices which are relative to air.
 """
 const air = Constant_Index(1.0)
-
