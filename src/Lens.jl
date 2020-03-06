@@ -1,5 +1,11 @@
+"""
+id: an identifier that uniquely identifies the component in a lens
+meta_data: any additional meta data for this component
+surfaces
+"""
 struct OpticalComponent{T <: Real}
-    name :: Any
+    id :: Symbol
+    meta_data :: Any
     surfaces :: Vector{OpticalSurface{T}}
 end
 
@@ -7,12 +13,13 @@ promote_rule(::Type{OpticalComponent{T1}}, ::Type{OpticalComponent{T2}}) where T
 
 function Base.convert(::Type{OpticalComponent{T}}, x :: OpticalComponent) where T
     OpticalComponent(
-        x.name,
+        x.id,
+        x.meta_data,
         Vector{OpticalSurface{T}}(x.surfaces)
     )
 end
 
-opticalComponent(name, surfaces) = OpticalComponent(name, surfaces)
+optical_component(id, meta_data, surfaces) = OpticalComponent(id, meta_data, surfaces)
 
 function track_length(oc :: OpticalComponent{T}) where T
     sum(map(s -> s.t, oc.surfaces))
@@ -70,7 +77,12 @@ function track_length(l :: Lens{T}) where T
     sum(map(c -> track_length(c), l.components))
 end
 
+# TODO: Can this be a normal constructor?
+# TODO: Should check that all 
 function make_lens(name, object, components)
+    if !allunique([c.id for c in components])
+        error("component IDs must be all unique")
+    end
     typ = promote_type(
         typeof(object.t),
         typeof(components[1].surfaces[1].t))

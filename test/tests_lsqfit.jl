@@ -8,8 +8,9 @@ function mylens(imageDist)
         "",
         object(air, 10.0),
         [
-            opticalComponent(
-                "",
+            optical_component(
+                :base,
+                nothing,
                 [
                     even_asphere(0, 0, 0, 0, 0, Clear_Diameter(100), silica, 1.5, :S1),
                     plano(nothing, silica, 1.5),

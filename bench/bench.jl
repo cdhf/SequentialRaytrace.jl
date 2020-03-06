@@ -3,7 +3,7 @@ using SequentialRaytrace
 function testlens()
     make_lens("", object(air, 200.0),
          [
-             opticalComponent("", [
+             optical_component(:a, nothing, [
                  sphere(1/50, nothing, silica, 15.0, :first_surface)
                  even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
              ])
