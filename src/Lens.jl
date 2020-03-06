@@ -19,7 +19,12 @@ function Base.convert(::Type{OpticalComponent{T}}, x :: OpticalComponent) where 
     )
 end
 
-optical_component(id, meta_data, surfaces) = OpticalComponent(id, meta_data, surfaces)
+function optical_component(id, meta_data, surfaces)
+    if !allunique(filter(s -> !isnothing(s.id), surfaces))
+        error("Surface IDs must be nothing or unique")
+    end
+    OpticalComponent(id, meta_data, surfaces)
+end
 
 function track_length(oc :: OpticalComponent{T}) where T
     sum(map(s -> s.t, oc.surfaces))
@@ -168,7 +173,7 @@ function trace_surfaces!(result, index, ray_before, n, t, surfaces, wavelength, 
             n = s.n
             t = s.t
         else
-            return RaytraceError(vignettedError(), index, result)
+            return RaytraceError(vignetted_error(), index, result)
         end
     end
     s_last = surfaces[end]

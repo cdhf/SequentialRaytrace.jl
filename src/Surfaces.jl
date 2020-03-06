@@ -25,7 +25,7 @@ end
 
 struct OpticalSurface{T <: Real}
     surface :: AbstractSurface{T}
-    aperture :: Union{Clear_Diameter{T}, Nothing}
+    aperture :: Union{ClearDiameter{T}, Nothing}
     n :: AbstractMedium{T}
     t :: T
     id :: Union{Symbol, Nothing}

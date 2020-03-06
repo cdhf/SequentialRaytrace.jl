@@ -60,10 +60,10 @@ using SequentialRaytrace
                     :base,
                     nothing,
                     [
-                        sphere(1/50, Clear_Diameter(2 * sqrt(40.0^2 + 40.0^2)), silica, 15.0)
-                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, Clear_Diameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
+                        sphere(1/50, ClearDiameter(2 * sqrt(40.0^2 + 40.0^2)), silica, 15.0)
+                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, ClearDiameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
                         plano(nothing, air, 15.0)
-                        plano(Clear_Diameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
+                        plano(ClearDiameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
                     ]
                 )
             ]

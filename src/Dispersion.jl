@@ -12,22 +12,22 @@ function refractive_index end
 """
 Definition of a medium with no dispersion.
 """
-struct Constant_Index{T} <: AbstractMedium{T}
+struct ConstantIndex{T} <: AbstractMedium{T}
     n :: T
 end
 
 
-function Base.convert(::Type{Constant_Index{T}}, x :: Constant_Index{R}) where T where R
-    Constant_Index{T}(convert(T, x.n))
+function Base.convert(::Type{ConstantIndex{T}}, x :: ConstantIndex{R}) where T where R
+    ConstantIndex{T}(convert(T, x.n))
 end
 
 
-function with_fieldtype(t, x :: Constant_Index)
-    convert(Constant_Index{t}, x)
+function with_fieldtype(t, x :: ConstantIndex)
+    convert(ConstantIndex{t}, x)
 end
 
 
-function refractive_index(medium :: Constant_Index{T}, λ :: T) where T
+function refractive_index(medium :: ConstantIndex{T}, λ :: T) where T
     medium.n
 end
 
@@ -85,4 +85,4 @@ const silica = Sellmeier_1(6.96166300e-1, 4.67914800e-3, 4.07942600e-1, 1.351206
 The refractive index of air is defined to be 1.0 at all wavelengths. This follows the usual
 convention to use refractive indices which are relative to air.
 """
-const air = Constant_Index(1.0)
+const air = ConstantIndex(1.0)

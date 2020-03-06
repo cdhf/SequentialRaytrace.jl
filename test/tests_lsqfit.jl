@@ -12,7 +12,7 @@ function mylens(imageDist)
                 :base,
                 nothing,
                 [
-                    even_asphere(0, 0, 0, 0, 0, Clear_Diameter(100), silica, 1.5, :S1),
+                    even_asphere(0, 0, 0, 0, 0, ClearDiameter(100), silica, 1.5, :S1),
                     plano(nothing, silica, 1.5),
                     sphere(-1.0/98.3, nothing, air, imageDist, :S2)
                 ])

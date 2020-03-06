@@ -10,22 +10,22 @@ struct RayError
 end
 
 
-function rayMissError()
+function ray_miss_error()
     RayError(:ray_miss, 0)
 end
 
 
-function totalInternalReflectionError()
+function total_internal_reflection_error()
     RayError(:total_internal_reflection, 0)
 end
 
 
-function intersectionMaxIterationsError()
+function intersection_max_iterations_error()
     RayError(:intersection_max_iterations, 0)
 end
 
 
-function vignettedError()
+function vignetted_error()
     RayError(:vignetted, 0)
 end
 

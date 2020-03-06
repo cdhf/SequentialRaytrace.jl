@@ -31,7 +31,7 @@ function transfer_to_intersection(ray, t, s :: Sphere)
     M1squared = ray.x^2 + ray.y^2 + ray.z^2 - e^2 + t^2 - 2 * t * ray.z
     E1Arg = ray.cz^2 - cv * (cv * M1squared - 2 * M1z)
     if E1Arg < 0
-        return rayMissError()
+        return ray_miss_error()
     end
     E1 = sqrt(E1Arg)
     L = e + (cv * M1squared - 2 * M1z) / (ray.cz + E1)
@@ -51,7 +51,7 @@ function refract((ray, E1), m, s :: Sphere, m1, λ)
         n1 = refractive_index(m1, λ)
         EprimeArg = 1 - (n0 / n1)^2 * (1 - E1^2)
         if EprimeArg < 0
-            return totalInternalReflectionError()
+            return total_internal_reflection_error()
         end
         Eprime = sqrt(EprimeArg)
         g1 = Eprime - n0 / n1 * E1
