@@ -45,7 +45,7 @@ function ray_from_NA(y, NA)
 end
 
 # extends ≈ operator
-function isapprox(ray1 :: Ray, ray2 :: Ray; kwargs...)
+function Base.isapprox(ray1 :: Ray, ray2 :: Ray; kwargs...)
     isapprox(ray1.x, ray2.x; kwargs...) &&
         isapprox(ray1.y, ray2.y; kwargs...) &&
         isapprox(ray1.z, ray2.z; kwargs...) &&

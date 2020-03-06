@@ -17,7 +17,7 @@ struct Constant_Index{T} <: AbstractMedium{T}
 end
 
 
-function convert(::Type{Constant_Index{T}}, x :: Constant_Index{R}) where T where R
+function Base.convert(::Type{Constant_Index{T}}, x :: Constant_Index{R}) where T where R
     Constant_Index{T}(convert(T, x.n))
 end
 
@@ -46,7 +46,7 @@ struct Sellmeier_1{T} <: AbstractMedium{T}
 end
 
 
-function convert(::Type{Sellmeier_1{T}}, x :: Sellmeier_1{R}) where T where R
+function Base.convert(::Type{Sellmeier_1{T}}, x :: Sellmeier_1{R}) where T where R
     Sellmeier_1{T}(
         convert(T, x.k1),
         convert(T, x.l1),

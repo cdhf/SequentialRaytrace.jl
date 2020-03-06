@@ -32,13 +32,13 @@ struct OpticalSurface{T <: Real}
 end
 
 
-promote_rule(::Type{OpticalSurface{T1}}, ::Type{OpticalSurface{T2}}) where T1 where T2 = OpticalSurface{promote_type(T1, T2)}
+Base.promote_rule(::Type{OpticalSurface{T1}}, ::Type{OpticalSurface{T2}}) where T1 where T2 = OpticalSurface{promote_type(T1, T2)}
 
 
 with_fieldtype(t, :: Nothing) = nothing
 
 
-function convert(::Type{OpticalSurface{T}}, x :: OpticalSurface) where T
+function Base.convert(::Type{OpticalSurface{T}}, x :: OpticalSurface) where T
     OpticalSurface(
         with_fieldtype(T, x.surface),
         with_fieldtype(T, x.aperture),

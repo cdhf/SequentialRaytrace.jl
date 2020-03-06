@@ -5,7 +5,7 @@ end
 
 promote_rule(::Type{OpticalComponent{T1}}, ::Type{OpticalComponent{T2}}) where T1 where T2 = OpticalComponent{promote_type(T1, T2)}
 
-function convert(::Type{OpticalComponent{T}}, x :: OpticalComponent) where T
+function Base.convert(::Type{OpticalComponent{T}}, x :: OpticalComponent) where T
     OpticalComponent(
         x.name,
         Vector{OpticalSurface{T}}(x.surfaces)
@@ -53,7 +53,7 @@ function with_fieldtype(t, x :: Object)
     Object(with_fieldtype(t, x.n,), convert(t, x.t))
 end
 
-function convert(::Type{Object{T}}, x :: Object) where T
+function Base.convert(::Type{Object{T}}, x :: Object) where T
     Object(
         with_fieldtype(T, x.n),
         convert(T, x.t)
