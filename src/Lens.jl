@@ -131,23 +131,23 @@ function trace!(result, lens, ray, wavelength; ignore_apertures = false)
     ray_c = with_fieldtype(typeof(lens.object.t), ray)
     result = update_result!(result, 1, :object, ray_c)
 
-    index = 2
+    global_index = 2
     n = lens.object.n
     t = lens.object.t
 
-    after_surfaces = trace_components!(result, index, ray_c, n, t, lens.components, wl, ignore_apertures)
+    after_surfaces = trace_components!(result, global_index, ray_c, n, t, lens.components, wl, ignore_apertures)
     trace_to_image!(result, lens, after_surfaces)
 end
 
-function trace_components!(result, index, ray, n, t, components, wavelength, ignore_apertures)
+function trace_components!(result, global_index, ray, n, t, components, wavelength, ignore_apertures)
     if length(components) > 0
-        after_surfaces = trace_component!(result, index, ray, n, t, components[1], wavelength, ignore_apertures)
+        after_surfaces = trace_component!(result, global_index, ray, n, t, components[1], wavelength, ignore_apertures)
         for c in components[2:end]
             if iserror(after_surfaces)
                 return after_surfaces
             end
-            (index, ray_before, n, t) = after_surfaces
-            after_surfaces = trace_component!(result, index, ray_before, n, t, c, wavelength, ignore_apertures)
+            (global_index, ray_before, n, t) = after_surfaces
+            after_surfaces = trace_component!(result, global_index, ray_before, n, t, c, wavelength, ignore_apertures)
         end
         after_surfaces
     else
@@ -155,36 +155,36 @@ function trace_components!(result, index, ray, n, t, components, wavelength, ign
     end
 end
 
-function trace_component!(result, index, ray_before, n, t, component, wavelength, ignore_apertures)
-    trace_surfaces!(result, index, ray_before, n, t, component.surfaces, wavelength, ignore_apertures)
+function trace_component!(result, global_index, ray_before, n, t, component, wavelength, ignore_apertures)
+    trace_surfaces!(result, global_index, component.id, ray_before, n, t, component.surfaces, wavelength, ignore_apertures)
 end
 
-function trace_surfaces!(result, index, ray_before, n, t, surfaces, wavelength, ignore_apertures)
+function trace_surfaces!(result, global_index, component_id, ray_before, n, t, surfaces, wavelength, ignore_apertures)
     for i in 1:length(surfaces)
         s = surfaces[i]
         ray_after = transfer_and_refract(ray_before, n, t, s.surface, s.n, wavelength)
         if iserror(ray_after)
-            return RaytraceError(ray_after, index, result)
+            return RaytraceError(ray_after, global_index, component_id, i, s.id, result)
         end
-        result = update_result!(result, index, s.id, ray_after)
+        result = update_result!(result, global_index, s.id, ray_after)
         if ignore_apertures || !is_vignetted(ray_after, s.aperture)
-            index = index + 1
+            global_index = global_index + 1
             ray_before = ray_after
             n = s.n
             t = s.t
         else
-            return RaytraceError(vignetted_error(), index, result)
+            return RaytraceError(vignetted_error(), global_index, component_id, i, s.id, result)
         end
     end
     s_last = surfaces[end]
-    (index, ray_before, s_last.n, s_last.t)
+    (global_index, ray_before, s_last.n, s_last.t)
 end
 
-function trace_to_image!(result, lens, (index, ray_before, last_n, last_t))
+function trace_to_image!(result, lens, (global_index, ray_before, last_n, last_t))
     ray_after = transfer_to_plane(ray_before, last_t)
-    update_result!(result, index, :image, ray_after)
+    update_result!(result, global_index, :image, ray_after)
 end
 
-function trace_to_image!(result, lens, after_surfaces :: RaytraceError)
-    after_surfaces
+function trace_to_image!(result, lens, err :: RaytraceError)
+    err
 end

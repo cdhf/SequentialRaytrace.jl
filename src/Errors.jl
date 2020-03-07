@@ -39,12 +39,15 @@ export iserror
 """
 This is the type returned from a ray trace when an error occured
 error_type is the actual RayError with any additional specific information
-surface_index is the index of the surface that the error occured at
+global_index is the index of the surface that the error occured at
 data is the ray trace result up to this point
 """
 struct RaytraceError{D} <: Exception
     error_type :: RayError
-    surface_index :: Integer # index
+    global_index :: Integer # global surface indcex from start of lens; object surface is index 1
+    component_id :: Symbol
+    local_index :: Integer # surface index within the component
+    surface_id :: Union{Nothing, Symbol}
     data :: D
 end
 
