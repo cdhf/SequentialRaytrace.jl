@@ -105,14 +105,14 @@ n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))
 """
 Rreallocate a result for trace!
 """
-function gen_result(::Type{Array{Ray, 1}}, lens)
-    Array{Ray}(undef, 2 + n_surfaces(lens))
+function gen_result(::Type{Array{Ray{T}, 1}}, lens :: Lens{T}) where T
+    Array{Ray{T}, 1}(undef, 2 + n_surfaces(lens))
 end
 
 """
 Update a result with data from ray tracing and return it
 """
-function update_result!(result :: Array{Ray, 1}, index, _symbol, ray)
+function update_result!(result :: Array{Ray{T}, 1}, index, _symbol, ray :: Ray{T}) where T
     result[index] = ray
     return result
 end

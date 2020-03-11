@@ -25,7 +25,7 @@ function model(x, p)
     t = typeof(imageDist)
     testray = ray_from_NA(0.0, 0.125)
     lens = mylens(imageDist)
-    result = gen_result(Vector{Ray}, lens)
+    result = gen_result(Vector{Ray{typeof(imageDist)}}, lens)
     r = trace!(result, lens, testray, 1.0)
     r[end].y
 end

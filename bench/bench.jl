@@ -1,4 +1,7 @@
+using BenchmarkTools
 using SequentialRaytrace
+import SequentialRaytrace: gen_result, update_result!
+using TimerOutputs
 
 function testlens()
     make_lens("", object(air, 200.0),
@@ -6,7 +9,67 @@ function testlens()
              optical_component(:a, nothing, [
                  sphere(1/50, nothing, silica, 15.0, :first_surface)
                  even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
-             ])
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+                 plano(nothing, silica, 15.0 )
+                 plano(nothing, air, 15.0 )
+            ])
          ]
          )
 end
@@ -40,6 +103,132 @@ function test()
     (r1, r2)
     # (unwrap(r1)[end], unwrap(r2)[end])
 end
+
+const to = TimerOutput()
+
+function warmup()
+    lens = testlens()
+    ray = testray()
+    result = gen_result(Vector{Ray}, lens)
+    trace!(result, lens, ray, 1.0)
+end
+
+function timeit()
+    lens = testlens()
+    ray = testray()
+    result = gen_result(Vector{Ray}, lens)
+    @timeit to "trace!" trace!(result, lens, ray, 1.0)
+end
+
+function bench1()
+    lens = testlens()
+    ray = testray()
+    result = gen_result(Vector{typeof(ray)}, lens)
+    @benchmark trace!($result, $lens, $ray, 1.0)
+end
+
+function run2(lens, ray)
+    result = gen_result(Vector{typeof(ray)}, lens)
+    trace!(result, lens, ray, 1.0)
+end
+
+function bench2()
+    lens = testlens()
+    ray = testray()
+    @benchmark run2($lens, $ray)
+end
+
+function timeit_xx()
+    @timeit to "testlens" lens = testlens()
+    @timeit to "testray" ray = testray()
+    @timeit to "genresult" result = gen_result(Vector{typeof(ray)}, lens)
+    @timeit to "trace!" trace!(result, lens, ray, 1.0)
+end
+
+function run2b()
+    lens = testlens()
+    ray = testray()
+    result = gen_result(Vector{typeof(ray)}, lens)
+    trace!(result, lens, ray, 1.0)
+end
+
+function bench2b()
+    @benchmark run2b()
+end
+
+function gen_result(::Type{Array{T, 2}}, lens) where T
+    Array{T, 2}(undef, 6, 2 + SequentialRaytrace.n_surfaces(lens))
+    # Array{T, 2}(undef, 2 + SequentialRaytrace.n_surfaces(lens), 6)
+end
+
+function update_result!(result :: Array{T, 2}, index, _symbol, ray) where T
+    result[1, index] = ray.x
+    result[2, index] = ray.y
+    result[3, index] = ray.z
+    result[4, index] = ray.cx
+    result[5, index] = ray.cy
+    result[6, index] = ray.cz
+    # result[index, 1] = ray.x
+    # result[index, 2] = ray.y
+    # result[index, 3] = ray.z
+    # result[index, 4] = ray.cx
+    # result[index, 5] = ray.cy
+    # result[index, 6] = ray.cz
+    return result
+end
+
+function bench3()
+    lens = testlens()
+    ray = testray()
+    result = gen_result(Array{typeof(ray.x), 2}, lens)
+    @benchmark trace!($result, $lens, $ray, 1.0)
+end
+
+function run4(lens, ray)
+    result = gen_result(Array{typeof(ray.x), 2}, lens)
+    trace!(result, lens, ray, 1.0)
+end
+
+function bench4()
+    lens = testlens()
+    ray = testray()
+    @benchmark run4($lens, $ray)
+end
+
+
+
+struct OnlyLast{T}
+    d :: Array{T, 1}
+end
+
+function gen_result(::Type{OnlyLast{T}}, lens) where T
+    OnlyLast(Array{T, 1}(undef, 6))
+end
+
+function update_result!(result :: OnlyLast{T}, _index, _symbol, ray) where T
+    result.d[1] = ray.x
+    result.d[2] = ray.y
+    result.d[3] = ray.z
+    result.d[4] = ray.cx
+    result.d[5] = ray.cy
+    result.d[6] = ray.cz
+    return result
+end
+
+function benchb()
+    lens = testlens()
+    ray = testray()
+    result = gen_result(OnlyLast{typeof(ray.x)}, lens)
+    @benchmark trace!($result, $lens, $ray, 1.0)
+end
+
+function timeit4b()
+    @timeit to "testlens" lens = testlens()
+    @timeit to "testray" ray = testray()
+    @timeit to "genresult" result = gen_result(OnlyLast{typeof(ray.x)}, lens)
+    @timeit to "trace!" trace!(result, lens, ray, 1.0)
+end
+
 
 function change_lens(lens)
     lens.components[1].surfaces[1] = sphere(1/40, nothing, silica, 15.0)
