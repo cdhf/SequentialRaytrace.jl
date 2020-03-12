@@ -6,7 +6,7 @@ using TimerOutputs
 function testlens()
     make_lens("", object(air, 200.0),
          [
-             optical_component(:a, nothing, [
+             optical_component(:a, Nothing, nothing, [
                  sphere(1/50, nothing, silica, 15.0, :first_surface)
                  even_asphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, air, 65.0)
                  plano(nothing, silica, 15.0 )

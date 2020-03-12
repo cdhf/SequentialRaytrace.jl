@@ -10,6 +10,7 @@ function mylens(imageDist)
         [
             optical_component(
                 :base,
+                Nothing,
                 nothing,
                 [
                     even_asphere(0, 0, 0, 0, 0, ClearDiameter(100), silica, 1.5, :S1),
