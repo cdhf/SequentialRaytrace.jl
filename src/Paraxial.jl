@@ -34,12 +34,12 @@ function sag(x, y, s :: Paraxial)
 end
 
 
-function transfer_to_intersection(ray, t, s :: Paraxial)
-    return(transfer_to_intersection(ray, t, Sphere(zero(t))))
+function transfer_to_intersection!(ray, t, s :: Paraxial)
+    return(transfer_to_intersection!(ray, t, Sphere(zero(t))))
 end
 
 
-function refract((ray, E1), m0, s :: Paraxial, m1, λ)
+function refract!((ray, E1), m0, s :: Paraxial, m1, λ)
     l = ray.cx
     m = ray.cy
     n = ray.cz
@@ -57,5 +57,6 @@ function refract((ray, E1), m0, s :: Paraxial, m1, λ)
     l_prime = ux_prime * n_prime
     m_prime = uy_prime * n_prime
 
-    Ray(ray.x, ray.y, ray.z, l_prime, m_prime ,n_prime)
+    ray.cx = l_prime; ray.cy = m_prime; ray.cz = n_prime
+    return ray
 end

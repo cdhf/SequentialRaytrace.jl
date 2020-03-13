@@ -2,7 +2,7 @@
 A Ray described by its (x, y, z) coordinates and the
 direction cosines (cx, cy, cz)
 """
-struct Ray{T <: Real}
+mutable struct Ray{T <: Real}
     x :: T
     y :: T
     z :: T

@@ -13,11 +13,11 @@ end
 
 
 function transfer_and_refract(ray, n1, t, s :: AbstractSurface, n2, λ)
-    transfered = transfer_to_intersection(ray, t, s)
+    transfered = transfer_to_intersection!(ray, t, s)
     if iserror(transfered)
         return transfered
     else
-        refracted = refract(transfered, n1, s, n2, λ)
+        refracted = refract!(transfered, n1, s, n2, λ)
         return refracted
     end
 end

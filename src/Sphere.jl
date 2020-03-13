@@ -24,7 +24,7 @@ function sag(radius, s :: Sphere)
 end
 
 # Raytrace für sphärische Flächen
-function transfer_to_intersection(ray, t, s :: Sphere)
+function transfer_to_intersection!(ray, t, s :: Sphere)
     cv = s.curvature
     e = t * ray.cz - (ray.x * ray.cx + ray.y * ray.cy + ray.z * ray.cz)
     M1z = ray.z + e * ray.cz - t
@@ -38,10 +38,12 @@ function transfer_to_intersection(ray, t, s :: Sphere)
     z1 = ray.z + L * ray.cz - t
     y1 = ray.y + L * ray.cy
     x1 = ray.x + L * ray.cx
-    (Ray(x1, y1, z1, ray.cx, ray.cy, ray.cz), E1)
+
+    ray.x = x1; ray.y = y1; ray.z = z1
+    return (ray, E1)
 end
 
-function refract((ray, E1), m, s :: Sphere, m1, λ)
+function refract!((ray, E1), m, s :: Sphere, m1, λ)
     if m == m1
         X1 = ray.cx
         Y1 = ray.cy
@@ -59,5 +61,7 @@ function refract((ray, E1), m, s :: Sphere, m1, λ)
         Y1 = n0 / n1 * ray.cy - g1 * s.curvature * ray.y
         X1 = n0 / n1 * ray.cx - g1 * s.curvature * ray.x
     end
-    Ray(ray.x, ray.y, ray.z, X1, Y1, Z1)
+
+    ray.cx = X1; ray.cy = Y1; ray.cz = Z1
+    return ray
 end

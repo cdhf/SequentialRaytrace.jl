@@ -98,7 +98,7 @@ end
 
 
 function transfer_to_plane(ray, t)
-    (r, e) = transfer_to_intersection(ray, t, Sphere(zero(t)))
+    (r, e) = transfer_to_intersection!(ray, t, Sphere(zero(t)))
     r
 end
 
@@ -108,14 +108,20 @@ n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))
 Rreallocate a result for trace!
 """
 function gen_result(::Type{Array{Ray{T}, 1}}, lens :: Lens{T}) where T
-    Array{Ray{T}, 1}(undef, 2 + n_surfaces(lens))
+    [Ray(zero(T), zero(T), zero(T), zero(T), zero(T), zero(T)) for i in range(1, stop = 2 + n_surfaces(lens))]
+    # Array{Ray{T}, 1}(undef, 2 + n_surfaces(lens))
 end
 
 """
 Update a result with data from ray tracing and return it
 """
 function update_result!(result :: Array{Ray{T}, 1}, index, _symbol, ray :: Ray{T}) where T
-    result[index] = ray
+    result[index].x = ray.x
+    result[index].y = ray.y
+    result[index].z = ray.z
+    result[index].cx = ray.cx
+    result[index].cy = ray.cy
+    result[index].cz = ray.cz
     return result
 end
 

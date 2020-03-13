@@ -50,7 +50,7 @@ function sag(radial_dist, s :: EvenAsphere)
 end
 
 # modelled after us_itera.c example from Zemax user defined surface DLLs
-function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}) where T
+function transfer_to_intersection_evenasphere!(ray :: Ray{T}, s :: EvenAsphere{T}) where T
     t = 100.0
     x = ray.x
     y = ray.y
@@ -74,11 +74,12 @@ function transfer_to_intersection_evenasphere(ray :: Ray{T}, s :: EvenAsphere{T}
         end
     end
 
-    Ray(x, y, z, ray.cx, ray.cy, ray.cz)
+    ray.x = x; ray.y = y; ray.z = z
+    return ray
 end
 
 
-function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
+function refract!(ray, m0, s :: EvenAsphere, m1, wavelength)
     if m0 == m1
         return ray
     end
@@ -139,19 +140,20 @@ function refract(ray, m0, s :: EvenAsphere, m1, wavelength)
     Y = nr * Y + gamma * mn
     Z = nr * Z + gamma * nn
 
-    Ray(x, y, z, X, Y, Z)
+    ray.cx = X; ray.cy = Y; ray.cz = Z
+    return ray
 end
 
 
-function transfer_to_intersection(ray :: Ray{T}, t :: T, s :: EvenAsphere{T}) where T
+function transfer_to_intersection!(ray :: Ray{T}, t :: T, s :: EvenAsphere{T}) where T
     # propagiere den Strahl erstmal zur sphärischen Grundfläche,
     # was wahrscheinlich ein ganz guter Startwert ist
     # TODO: missing error handling
-    ts = transfer_to_intersection(ray, t, Sphere(s.curvature))
+    ts = transfer_to_intersection!(ray, t, Sphere(s.curvature))
     if iserror(ts)
         return ts
     else
         (ray_at_sphere, _E1) = ts
-        return transfer_to_intersection_evenasphere(ray_at_sphere, s)
+        return transfer_to_intersection_evenasphere!(ray_at_sphere, s)
     end
 end
