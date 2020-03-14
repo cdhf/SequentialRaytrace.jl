@@ -107,20 +107,14 @@ n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))
 Rreallocate a result for trace!
 """
 function gen_result(::Type{Array{Ray{T}, 1}}, lens :: Lens{T}) where T
-    [Ray(zero(T), zero(T), zero(T), zero(T), zero(T), zero(T), zero(T)) for i in range(1, stop = 2 + n_surfaces(lens))]
-    # Array{Ray{T}, 1}(undef, 2 + n_surfaces(lens))
+    [Ray(zero(T), zero(T), zero(T), zero(T), zero(T), zero(T)) for i in range(1, stop = 2 + n_surfaces(lens))]
 end
 
 """
 Update a result with data from ray tracing and return it
 """
-function update_result!(result :: Array{Ray{T}, 1}, index, _symbol, ray :: Ray{T}) where T
-    result[index].x = ray.x
-    result[index].y = ray.y
-    result[index].z = ray.z
-    result[index].cx = ray.cx
-    result[index].cy = ray.cy
-    result[index].cz = ray.cz
+function update_result!(result :: Array{Ray{T}, 1}, index, _symbol, ray) where T
+    result[index] = make_ray(ray.x, ray.y, ray.z, ray.cx, ray.cy, ray.cz)
     return result
 end
 
@@ -133,9 +127,9 @@ wavelength :: Real
 result :: something that has an update_result! function
 ignore_apertures :: Bool
 """
-function trace!(result, lens, ray, wavelength; ignore_apertures = false)
+function trace!(result, lens, ray :: Ray{T}, wavelength; ignore_apertures = false) where T
     wl = convert(typeof(lens.object.t), wavelength)
-    ray_c = with_fieldtype(typeof(lens.object.t), ray)
+    ray_c = to_internal(typeof(lens.object.t), ray)
     result = update_result!(result, 1, :object, ray_c)
 
     global_index = 2

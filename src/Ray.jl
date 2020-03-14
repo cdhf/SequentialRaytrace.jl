@@ -1,8 +1,5 @@
-"""
-A Ray described by its (x, y, z) coordinates and the
-direction cosines (cx, cy, cz)
-"""
-mutable struct Ray{T <: Real}
+# only for internal use to avoid allocations
+mutable struct InternalRay{T <: Real}
     x :: T
     y :: T
     z :: T
@@ -12,6 +9,18 @@ mutable struct Ray{T <: Real}
     _e1 :: T
 end
 
+"""
+A Ray described by its (x, y, z) coordinates and the
+direction cosines (cx, cy, cz)
+"""
+struct Ray{T <: Real}
+    x :: T
+    y :: T
+    z :: T
+    cx :: T
+    cy :: T
+    cz :: T
+end
 
 # TODO : how to do this as an inner constructor?
 """
@@ -20,19 +29,19 @@ end
 Return a Ray object. The fields are the coordinates and the direction cosines
 """
 function make_ray(a, b, c, d, e, f)
-    Ray(promote(a, b, c, d, e, f, zero(a))...)
+    Ray(promote(a, b, c, d, e, f)...)
 end
 
 
-function with_fieldtype(t, ray :: Ray)
-    Ray(
+function to_internal(t, ray :: Ray)
+    InternalRay(
         convert(t, ray.x),
         convert(t, ray.y),
         convert(t, ray.z),
         convert(t, ray.cx),
         convert(t, ray.cy),
         convert(t, ray.cz),
-        convert(t, ray._e1)
+        zero(t)
     )
 end
 

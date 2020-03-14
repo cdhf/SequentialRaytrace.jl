@@ -11,12 +11,12 @@ function with_fieldtype(t, x :: ClearDiameter)
 end
 
 
-function is_vignetted(ray :: Ray{T}, aper :: Nothing) where T
+function is_vignetted(ray, aper :: Nothing) where T
     return(false)
 end
 
 
-function is_vignetted(ray :: Ray{T}, aper :: ClearDiameter{T}) where T
+function is_vignetted(ray, aper :: ClearDiameter{T}) where T
     ray_height = 2 * sqrt(ray.x^2 + ray.y^2)
     return(ray_height > aper.clear_diameter)
 end

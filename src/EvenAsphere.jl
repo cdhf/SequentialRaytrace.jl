@@ -50,7 +50,7 @@ function sag(radial_dist, s :: EvenAsphere)
 end
 
 # modelled after us_itera.c example from Zemax user defined surface DLLs
-function transfer_to_intersection_evenasphere!(ray :: Ray{T}, s :: EvenAsphere{T}) where T
+function transfer_to_intersection_evenasphere!(ray, s :: EvenAsphere{T}) where T
     t = 100.0
     x = ray.x
     y = ray.y
@@ -145,7 +145,7 @@ function refract!(ray, m0, s :: EvenAsphere, m1, wavelength)
 end
 
 
-function transfer_to_intersection!(ray :: Ray{T}, t :: T, s :: EvenAsphere{T}) where T
+function transfer_to_intersection!(ray, t :: T, s :: EvenAsphere{T}) where T
     # propagiere den Strahl erstmal zur sphärischen Grundfläche,
     # was wahrscheinlich ein ganz guter Startwert ist
     # TODO: missing error handling
