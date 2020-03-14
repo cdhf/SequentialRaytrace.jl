@@ -39,7 +39,7 @@ function transfer_to_intersection!(ray, t, s :: Paraxial)
 end
 
 
-function refract!((ray, E1), m0, s :: Paraxial, m1, λ)
+function refract!(ray, m0, s :: Paraxial, m1, λ)
     l = ray.cx
     m = ray.cy
     n = ray.cz

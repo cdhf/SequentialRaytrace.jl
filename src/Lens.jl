@@ -107,7 +107,7 @@ n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))
 Rreallocate a result for trace!
 """
 function gen_result(::Type{Array{Ray{T}, 1}}, lens :: Lens{T}) where T
-    [Ray(zero(T), zero(T), zero(T), zero(T), zero(T), zero(T)) for i in range(1, stop = 2 + n_surfaces(lens))]
+    [Ray(zero(T), zero(T), zero(T), zero(T), zero(T), zero(T), zero(T)) for i in range(1, stop = 2 + n_surfaces(lens))]
     # Array{Ray{T}, 1}(undef, 2 + n_surfaces(lens))
 end
 

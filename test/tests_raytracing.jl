@@ -76,6 +76,7 @@ using SequentialRaytrace
         @test trace!(result, lens, ray, 1.0).component_id == :base
         @test trace!(result, lens, ray, 1.0).local_index == 2
         @test iserror(trace!(result, lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0))
+        ray = make_ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
         @test error_type(trace!(result, lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0)) === :ray_miss
     end
 end
