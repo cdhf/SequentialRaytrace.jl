@@ -219,7 +219,7 @@ function benchb()
     lens = testlens()
     ray = testray()
     result = gen_result(OnlyLast{typeof(ray.x)}, lens)
-    @benchmark trace!($result, $lens, $ray, 1.0)
+    @benchmark for i in range(1, stop=1000000) trace!($result, $lens, $ray, 1.0) end
 end
 
 function timeit4b()
