@@ -9,6 +9,7 @@ mutable struct Ray{T <: Real}
     cx :: T
     cy :: T
     cz :: T
+    _e1 :: T
 end
 
 
@@ -19,7 +20,7 @@ end
 Return a Ray object. The fields are the coordinates and the direction cosines
 """
 function make_ray(a, b, c, d, e, f)
-    Ray(promote(a, b, c, d, e, f)...)
+    Ray(promote(a, b, c, d, e, f, zero(a))...)
 end
 
 
@@ -30,7 +31,8 @@ function with_fieldtype(t, ray :: Ray)
         convert(t, ray.z),
         convert(t, ray.cx),
         convert(t, ray.cy),
-        convert(t, ray.cz)
+        convert(t, ray.cz),
+        convert(t, ray._e1)
     )
 end
 

@@ -98,8 +98,7 @@ end
 
 
 function transfer_to_plane(ray, t)
-    (r, e) = transfer_to_intersection!(ray, t, Sphere(zero(t)))
-    r
+    return transfer_to_intersection!(ray, t, Sphere(zero(t)))
 end
 
 n_surfaces(lens :: Lens) = sum(map(c -> length(c.surfaces), lens.components))

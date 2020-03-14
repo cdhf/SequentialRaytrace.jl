@@ -153,7 +153,6 @@ function transfer_to_intersection!(ray :: Ray{T}, t :: T, s :: EvenAsphere{T}) w
     if iserror(ts)
         return ts
     else
-        (ray_at_sphere, _E1) = ts
-        return transfer_to_intersection_evenasphere!(ray_at_sphere, s)
+        return transfer_to_intersection_evenasphere!(ts, s)
     end
 end

@@ -39,11 +39,12 @@ function transfer_to_intersection!(ray, t, s :: Sphere)
     y1 = ray.y + L * ray.cy
     x1 = ray.x + L * ray.cx
 
-    ray.x = x1; ray.y = y1; ray.z = z1
-    return (ray, E1)
+    ray.x = x1; ray.y = y1; ray.z = z1; ray._e1 = E1
+    return ray
 end
 
-function refract!((ray, E1), m, s :: Sphere, m1, λ)
+function refract!(ray, m, s :: Sphere, m1, λ)
+    E1 = ray._e1
     if m == m1
         X1 = ray.cx
         Y1 = ray.cy
