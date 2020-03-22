@@ -11,7 +11,7 @@ function with_fieldtype(t, x :: Paraxial)
 end
 
 
-function paraxial(focal_length, aperture, n, t, id = nothing)
+function Paraxial(focal_length, aperture, n, t, id = nothing)
     typ = promote_type(typeof(focal_length),
                        fieldtypes(typeof(aperture))...,
                        fieldtypes(typeof(n))...,

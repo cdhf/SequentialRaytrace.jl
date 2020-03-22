@@ -6,7 +6,7 @@ end
 with_fieldtype(t, x :: Sphere) = Sphere(convert(t, x.curvature))
 
 
-function sphere(curvature, aperture, n, t, id = nothing)
+function Sphere(curvature, aperture, n, t, id = nothing)
     typ = promote_type(
         typeof(curvature),
         fieldtypes(typeof(aperture))...,
@@ -16,7 +16,7 @@ function sphere(curvature, aperture, n, t, id = nothing)
 end
 
 
-plano(aperture, n, t, id = nothing) = sphere(0.0, aperture, n, t, id)
+Plano(aperture, n, t, id = nothing) = Sphere(0.0, aperture, n, t, id)
 
 function sag(radius, s :: Sphere)
     radius2 = radius^2

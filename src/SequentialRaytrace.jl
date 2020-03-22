@@ -3,7 +3,7 @@ module SequentialRaytrace
 import Base: convert, isapprox, promote_rule
 
 include("Dispersion.jl")
-export ConstantIndex, Sellmeier_1, air, silica, refractive_index
+export ConstantIndex, Sellmeier_1, Air, Silica, refractive_index
 
 include("Ray.jl")
 export ray_from_NA, Ray
@@ -18,13 +18,13 @@ include("Surfaces.jl")
 export sag
 
 include("Sphere.jl")
-export plano, sphere
+export Plano, Sphere
 
 include("EvenAsphere.jl")
-export even_asphere
+export EvenAsphere
 
 include("Paraxial.jl")
-export paraxial
+export Paraxial
 
 include("Lens.jl")
 export gen_result, Lens, Object, OpticalComponent

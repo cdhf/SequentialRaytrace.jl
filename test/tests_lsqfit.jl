@@ -6,16 +6,16 @@ function mylens(imageDist)
     t = typeof(imageDist)
     Lens(
         "",
-        Object(air, 10.0),
+        Object(Air, 10.0),
         [
             OpticalComponent(
                 :base,
                 Nothing,
                 nothing,
                 [
-                    even_asphere(0, 0, 0, 0, 0, ClearDiameter(100), silica, 1.5, :S1),
-                    plano(nothing, silica, 1.5),
-                    sphere(-1.0/98.3, nothing, air, imageDist, :S2)
+                    EvenAsphere(0, 0, 0, 0, 0, ClearDiameter(100), Silica, 1.5, :S1),
+                    Plano(nothing, Silica, 1.5),
+                    Sphere(-1.0/98.3, nothing, Air, imageDist, :S2)
                 ])
         ]
     )

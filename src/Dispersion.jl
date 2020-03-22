@@ -78,11 +78,11 @@ end
 """
 Silica dispersion. Coefficients as in Zemax.
 """
-const silica = Sellmeier_1(6.96166300e-1, 4.67914800e-3, 4.07942600e-1, 1.35120600e-2, 8.974794e-1, 9.7934e+1)
+const Silica = Sellmeier_1(6.96166300e-1, 4.67914800e-3, 4.07942600e-1, 1.35120600e-2, 8.974794e-1, 9.7934e+1)
 
 
 """
 The refractive index of air is defined to be 1.0 at all wavelengths. This follows the usual
 convention to use refractive indices which are relative to air.
 """
-const air = ConstantIndex(1.0)
+const Air = ConstantIndex(1.0)

@@ -9,9 +9,9 @@ using SequentialRaytrace
     @testset "paraxial surface x" begin
         lens = Lens(
             "",
-            Object(air, 200.0),
+            Object(Air, 200.0),
             [
-                OpticalComponent(:base, Nothing, :meta, [paraxial(150.5, nothing, air, 0.0)])
+                OpticalComponent(:base, Nothing, :meta, [Paraxial(150.5, nothing, Air, 0.0)])
             ]
         )
         result = gen_result(Vector{typeof(ray)}, lens)
@@ -32,15 +32,15 @@ using SequentialRaytrace
     @testset "without raytracing errors" begin
         lens = Lens(
             "",
-            Object(air, 200.0),
+            Object(Air, 200.0),
             [
                 OpticalComponent(:c1, Nothing, :meta1, [
-                    sphere(1/50, nothing, silica, 15.0)
-                    even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, air, 35.0)
+                    Sphere(1/50, nothing, Silica, 15.0)
+                    EvenAsphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, Air, 35.0)
                 ]),
                 OpticalComponent(:c2, Nothing, "meta2", [
-                    plano(nothing, air, 10.0)
-                    paraxial(-120.3, nothing, air, 30.0)
+                    Plano(nothing, Air, 10.0)
+                    Paraxial(-120.3, nothing, Air, 30.0)
                 ])
             ]
         )
@@ -54,17 +54,17 @@ using SequentialRaytrace
     @testset "with raytracing errors" begin
         lens = Lens(
             "",
-            Object(air, 200.0),
+            Object(Air, 200.0),
             [
                 OpticalComponent(
                     :base,
                     Nothing,
                     nothing,
                     [
-                        sphere(1/50, ClearDiameter(2 * sqrt(40.0^2 + 40.0^2)), silica, 15.0)
-                        even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, ClearDiameter(2 * sqrt(20.0^2 + (-1.0)^2)), air, 35.0)
-                        plano(nothing, air, 15.0)
-                        plano(ClearDiameter(2 * sqrt(10.0^2 + 10.0^2)), air, 15.0)
+                        Sphere(1/50, ClearDiameter(2 * sqrt(40.0^2 + 40.0^2)), Silica, 15.0)
+                        EvenAsphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, ClearDiameter(2 * sqrt(20.0^2 + (-1.0)^2)), Air, 35.0)
+                        Plano(nothing, Air, 15.0)
+                        Plano(ClearDiameter(2 * sqrt(10.0^2 + 10.0^2)), Air, 15.0)
                     ]
                 )
             ]

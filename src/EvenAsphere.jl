@@ -18,7 +18,7 @@ function with_fieldtype(t, x :: EvenAsphere)
 end
 
 
-function even_asphere(
+function EvenAsphere(
     curvature, conic, c4, c6, c8, aperture, n, t, id = nothing)
     typ = promote_type(
         typeof(curvature),
