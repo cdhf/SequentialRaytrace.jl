@@ -8,7 +8,7 @@ function mylens(imageDist)
         "",
         object(air, 10.0),
         [
-            optical_component(
+            OpticalComponent(
                 :base,
                 Nothing,
                 nothing,

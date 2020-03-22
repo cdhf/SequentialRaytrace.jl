@@ -11,7 +11,7 @@ using SequentialRaytrace
             "",
             object(air, 200.0),
             [
-                optical_component(:base, Nothing, :meta, [paraxial(150.5, nothing, air, 0.0)])
+                OpticalComponent(:base, Nothing, :meta, [paraxial(150.5, nothing, air, 0.0)])
             ]
         )
         result = gen_result(Vector{typeof(ray)}, lens)
@@ -34,11 +34,11 @@ using SequentialRaytrace
             "",
             object(air, 200.0),
             [
-                optical_component(:c1, Nothing, :meta1, [
+                OpticalComponent(:c1, Nothing, :meta1, [
                     sphere(1/50, nothing, silica, 15.0)
                     even_asphere(-1/50, 0.0, 1e-7, 1e-9, 0.0, nothing, air, 35.0)
                 ]),
-                optical_component(:c2, Nothing, "meta2", [
+                OpticalComponent(:c2, Nothing, "meta2", [
                     plano(nothing, air, 10.0)
                     paraxial(-120.3, nothing, air, 30.0)
                 ])
@@ -56,7 +56,7 @@ using SequentialRaytrace
             "",
             object(air, 200.0),
             [
-                optical_component(
+                OpticalComponent(
                     :base,
                     Nothing,
                     nothing,

@@ -8,6 +8,12 @@ struct OpticalComponent{T <: Real}
     type :: DataType
     meta_data :: Any
     surfaces :: Vector{OpticalSurface{T}}
+    function OpticalComponent(id, type, meta_data, surfaces :: Vector{OpticalSurface{T}}) where T
+        if !allunique(filter(s -> !isnothing(s.id), surfaces))
+            error("Surface IDs must be nothing or unique")
+        end
+        new{T}(id, type, meta_data, surfaces)
+    end
 end
 
 promote_rule(::Type{OpticalComponent{T1}}, ::Type{OpticalComponent{T2}}) where T1 where T2 = OpticalComponent{promote_type(T1, T2)}
@@ -19,13 +25,6 @@ function Base.convert(::Type{OpticalComponent{T}}, x :: OpticalComponent) where 
         x.meta_data,
         Vector{OpticalSurface{T}}(x.surfaces)
     )
-end
-
-function optical_component(id, type, meta_data, surfaces)
-    if !allunique(filter(s -> !isnothing(s.id), surfaces))
-        error("Surface IDs must be nothing or unique")
-    end
-    OpticalComponent(id, type, meta_data, surfaces)
 end
 
 function track_length(oc :: OpticalComponent{T}) where T
