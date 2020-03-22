@@ -114,7 +114,7 @@ end
 Update a result with data from ray tracing and return it
 """
 function update_result!(result :: Array{Ray{T}, 1}, index, _symbol, ray) where T
-    result[index] = make_ray(ray.x, ray.y, ray.z, ray.cx, ray.cy, ray.cz)
+    result[index] = Ray(ray.x, ray.y, ray.z, ray.cx, ray.cy, ray.cz)
     return result
 end
 

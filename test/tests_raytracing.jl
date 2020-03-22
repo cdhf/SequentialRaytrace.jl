@@ -5,7 +5,7 @@ using SequentialRaytrace
     X = 0.0
     Y = 0.0
 
-    ray = make_ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
+    ray = Ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "paraxial surface x" begin
         lens = make_lens(
             "",
@@ -15,11 +15,11 @@ using SequentialRaytrace
             ]
         )
         result = gen_result(Vector{typeof(ray)}, lens)
-        @test trace!(result, lens, ray, 1.0)[end] ≈ make_ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
+        @test trace!(result, lens, ray, 1.0)[end] ≈ Ray(0.0, 20.0, 0.0, 0.0, -0.1317322700, 0.9912853318) atol=0.00000000001
 
         ray2 = ray_from_NA(0.0, 0.1)
         r = trace!(result, lens, ray2, 1.0)
-        @test r[end] ≈ make_ray(0.0, 20.100756305, 0.0, 0.0, -0.0330380156, 0.9994540958) atol=0.000000001
+        @test r[end] ≈ Ray(0.0, 20.100756305, 0.0, 0.0, -0.0330380156, 0.9994540958) atol=0.000000001
         y = r[end].y
         cy = r[end].cy
         cz = r[end].cz
@@ -28,7 +28,7 @@ using SequentialRaytrace
     end
 
 
-    ray = make_ray(5.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
+    ray = Ray(5.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "without raytracing errors" begin
         lens = make_lens(
             "",
@@ -45,12 +45,12 @@ using SequentialRaytrace
             ]
         )
         result = gen_result(Vector{typeof(ray)}, lens)
-        @test trace!(result, lens, ray, 1.0)[end] ≈ make_ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
+        @test trace!(result, lens, ray, 1.0)[end] ≈ Ray(-4.0353445, -16.1413780, 0.0, -0.103684, -0.4147364, 0.90401511) atol=0.000001
     end
 
     X = 0.1
     Y = -0.1
-    ray = make_ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
+    ray = Ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
     @testset "with raytracing errors" begin
         lens = make_lens(
             "",
@@ -71,13 +71,13 @@ using SequentialRaytrace
         )
         result = gen_result(Vector{typeof(ray)}, lens)
         @test iserror(trace!(result, lens, ray, 1.0))
-        @test trace!(result, lens, ray, 1.0).data[3] ≈ make_ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
+        @test trace!(result, lens, ray, 1.0).data[3] ≈ Ray(20.189725, -1.065485, -4.184919, -0.313750, -0.082502, 0.945914) atol=0.000001
         @test trace!(result, lens, ray, 1.0).global_index == 3
         @test trace!(result, lens, ray, 1.0).component_id == :base
         @test trace!(result, lens, ray, 1.0).local_index == 2
-        @test iserror(trace!(result, lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0))
-        ray = make_ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
-        @test error_type(trace!(result, lens, make_ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0)) === :ray_miss
+        @test iserror(trace!(result, lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0))
+        ray = Ray(0.0, 20.0, 0.0, X, Y, sqrt(1.0 - X^2 - Y^2))
+        @test error_type(trace!(result, lens, Ray(0.0, 0.0, 0.0, X, Y, 1 - X^2 - Y^2), 1.0)) === :ray_miss
     end
 
 end
