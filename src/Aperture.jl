@@ -3,6 +3,7 @@ Defines a circular aperture with a diameter given in mm.
 """
 struct ClearDiameter{T <: Real}
     clear_diameter :: T
+    ClearDiameter(ca) = ca < zero(typeof(ca)) ? error("ClearDiameter < 0") : new{typeof(ca)}(ca)
 end
 
 
