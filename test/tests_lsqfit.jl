@@ -4,7 +4,7 @@ using LsqFit
 
 function mylens(imageDist)
     t = typeof(imageDist)
-    make_lens(
+    Lens(
         "",
         Object(air, 10.0),
         [

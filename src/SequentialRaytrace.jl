@@ -27,7 +27,7 @@ include("Paraxial.jl")
 export paraxial
 
 include("Lens.jl")
-export gen_result, make_lens, Object, OpticalComponent
+export gen_result, Lens, Object, OpticalComponent
 export track_length, trace!
 
 end # module

@@ -7,7 +7,7 @@ using SequentialRaytrace
 
     ray = Ray(0.0, 20.0, 0.0, X, Y)
     @testset "paraxial surface x" begin
-        lens = make_lens(
+        lens = Lens(
             "",
             Object(air, 200.0),
             [
@@ -30,7 +30,7 @@ using SequentialRaytrace
 
     ray = Ray(5.0, 20.0, 0.0, X, Y)
     @testset "without raytracing errors" begin
-        lens = make_lens(
+        lens = Lens(
             "",
             Object(air, 200.0),
             [
@@ -52,7 +52,7 @@ using SequentialRaytrace
     Y = -0.1
     ray = Ray(0.0, 20.0, 0.0, X, Y)
     @testset "with raytracing errors" begin
-        lens = make_lens(
+        lens = Lens(
             "",
             Object(air, 200.0),
             [

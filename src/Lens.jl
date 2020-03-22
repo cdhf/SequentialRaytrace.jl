@@ -79,22 +79,20 @@ struct Lens{T <: Real}
     name :: Any
     object :: Object{T}
     components :: Vector{OpticalComponent{T}}
+    function Lens(name, object, components)
+        if !allunique([c.id for c in components])
+            error("component IDs must be all unique")
+        end
+        typ = promote_type(
+            typeof(object.t),
+            typeof(components[1].surfaces[1].t))
+        new{typ}(name, with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
+end
+
 end
 
 function track_length(l :: Lens{T}) where T
     sum(map(c -> track_length(c), l.components))
-end
-
-# TODO: Can this be a normal constructor?
-# TODO: Should check that all 
-function make_lens(name, object, components)
-    if !allunique([c.id for c in components])
-        error("component IDs must be all unique")
-    end
-    typ = promote_type(
-        typeof(object.t),
-        typeof(components[1].surfaces[1].t))
-    Lens(name, with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
 end
 
 

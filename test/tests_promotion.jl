@@ -28,9 +28,9 @@ using SequentialRaytrace
                                                   plano(nothing, air, 1.2, :a),
                                                   plano(nothing, air, 1.2, nothing)])
 
-    @test_throws ErrorException make_lens("",
-                                          Object(air, 200),
-                                          [OpticalComponent(:a, Nothing, nothing, [plano(nothing, air, 1.2)]),
-                                           OpticalComponent(:a, Nothing, nothing, [plano(nothing, air, 2.2)])]
-                                          )
+    @test_throws ErrorException Lens("",
+                                     Object(air, 200),
+                                     [OpticalComponent(:a, Nothing, nothing, [plano(nothing, air, 1.2)]),
+                                      OpticalComponent(:a, Nothing, nothing, [plano(nothing, air, 2.2)])]
+                                     )
 end
