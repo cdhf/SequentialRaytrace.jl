@@ -3,8 +3,8 @@ using SequentialRaytrace
 
 @testset "Promotion" begin
     # all these tests should not throw
-    @test object(air, 200) != 0
-    @test object(silica, 200) != 0
+    @test Object(air, 200) != 0
+    @test Object(silica, 200) != 0
     @test sphere(0, nothing, silica, 100) != 0
     @test sphere(0, ClearDiameter(10), silica, 100) != 0
     @test paraxial(100, ClearDiameter(10), silica, 100) != 0
@@ -29,7 +29,7 @@ using SequentialRaytrace
                                                   plano(nothing, air, 1.2, nothing)])
 
     @test_throws ErrorException make_lens("",
-                                          object(air, 200),
+                                          Object(air, 200),
                                           [OpticalComponent(:a, Nothing, nothing, [plano(nothing, air, 1.2)]),
                                            OpticalComponent(:a, Nothing, nothing, [plano(nothing, air, 2.2)])]
                                           )

@@ -9,7 +9,7 @@ using SequentialRaytrace
     @testset "paraxial surface x" begin
         lens = make_lens(
             "",
-            object(air, 200.0),
+            Object(air, 200.0),
             [
                 OpticalComponent(:base, Nothing, :meta, [paraxial(150.5, nothing, air, 0.0)])
             ]
@@ -32,7 +32,7 @@ using SequentialRaytrace
     @testset "without raytracing errors" begin
         lens = make_lens(
             "",
-            object(air, 200.0),
+            Object(air, 200.0),
             [
                 OpticalComponent(:c1, Nothing, :meta1, [
                     sphere(1/50, nothing, silica, 15.0)
@@ -54,7 +54,7 @@ using SequentialRaytrace
     @testset "with raytracing errors" begin
         lens = make_lens(
             "",
-            object(air, 200.0),
+            Object(air, 200.0),
             [
                 OpticalComponent(
                     :base,

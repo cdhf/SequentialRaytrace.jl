@@ -54,13 +54,15 @@ end
 struct Object{T}
     n :: AbstractMedium{T}
     t :: T
+    function Object(n, t)
+        typ = promote_type(fieldtypes(typeof(n))...,
+                           typeof(t))
+        n2 = with_fieldtype(typ, n)
+        t2 = convert(typ, t)
+        new{typeof(t2)}(n2, t2)
+    end
 end
 
-function object(n, t)
-    typ = promote_type(fieldtypes(typeof(n))...,
-                      typeof(t))
-    Object(with_fieldtype(typ, n), convert(typ, t))
-end
 
 function with_fieldtype(t, x :: Object)
     Object(with_fieldtype(t, x.n,), convert(t, x.t))

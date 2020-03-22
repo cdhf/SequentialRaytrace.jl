@@ -6,7 +6,7 @@ function mylens(imageDist)
     t = typeof(imageDist)
     make_lens(
         "",
-        object(air, 10.0),
+        Object(air, 10.0),
         [
             OpticalComponent(
                 :base,
