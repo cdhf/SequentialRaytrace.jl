@@ -1,3 +1,7 @@
+"""
+SequentialRaytrace is a package for sequential ray tracing of
+optical systems.
+"""
 module SequentialRaytrace
 
 import Base: convert, isapprox, promote_rule

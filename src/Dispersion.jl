@@ -4,13 +4,18 @@ abstract type AbstractMedium{T <: Real} end
 """
     refractive_index(medium :: AbstractMedium{T}, λ :: T) where T
 
-Return the refractive index of medium at the given wavelength in μm.
+Return the refractive index of medium at the given wavelength λ in μm.
 """
 function refractive_index end
 
 
 """
+    ConstantIndex{T}
+
 Definition of a medium with no dispersion.
+
+# Fields
+- `n :: T`: The refractive index of the medium
 """
 struct ConstantIndex{T} <: AbstractMedium{T}
     n :: T
@@ -33,8 +38,12 @@ end
 
 
 """
+    Sellmeier_1{T}
+
 Definition of a material's dispersion using the Sellmeier equation. This definition is
 equivalent to the Zemax Sellmeier_1 dispersion equation.
+
+``n^2(λ) = 1 + \\frac{k_1 λ^2}{λ^2 - l_1} + \\frac{k_2 λ^2}{λ^2 - l_1} + \\frac{k_3 λ^2}{λ^2 - l_3}``
 """
 struct Sellmeier_1{T} <: AbstractMedium{T}
     k1 :: T
@@ -76,13 +85,18 @@ end
 
 
 """
-Silica dispersion. Coefficients as in Zemax.
+    Silica
+
+Dispersion of fused silica, defined as Sellmeier equation coefficients.
+The coefficients match Zemax.
 """
 const Silica = Sellmeier_1(6.96166300e-1, 4.67914800e-3, 4.07942600e-1, 1.35120600e-2, 8.974794e-1, 9.7934e+1)
 
 
 """
+    Air
+
 The refractive index of air is defined to be 1.0 at all wavelengths. This follows the usual
-convention to use refractive indices which are relative to air.
+convention to define refractive indices relative to air.
 """
 const Air = ConstantIndex(1.0)
