@@ -4,13 +4,14 @@ optical systems.
 """
 module SequentialRaytrace
 
-import Base: convert, isapprox, promote_rule
-
 include("Dispersion.jl")
-export ConstantIndex, Sellmeier_1, Air, Silica, refractive_index
+export Air, Silica
+export ConstantIndex, Sellmeier_1
+export refractive_index
 
 include("Ray.jl")
-export ray_from_NA, Ray
+export Ray
+export ray_from_NA
 
 include("Errors.jl")
 export error_type
@@ -31,7 +32,7 @@ include("Paraxial.jl")
 export Paraxial
 
 include("Lens.jl")
-export gen_result, Lens, Object, OpticalComponent
-export track_length, trace!
+export Lens, Object, OpticalComponent
+export gen_result, track_length, trace!
 
 end # module
