@@ -31,8 +31,14 @@ export EvenAsphere
 include("Paraxial.jl")
 export Paraxial
 
+include("Component.jl")
+export OpticalComponent
+export track_length
+
 include("Lens.jl")
-export Lens, Object, OpticalComponent
-export gen_result, track_length, trace!
+export Lens, Object
+
+include("Trace.jl")
+export gen_result, trace!
 
 end # module
