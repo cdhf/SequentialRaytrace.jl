@@ -7,7 +7,7 @@ struct EvenAsphere{T} <: AbstractRotationalSymmetricSurface{T}
 end
 
 
-function with_fieldtype(t, x :: EvenAsphere)
+function convert_fields(t, x :: EvenAsphere)
     EvenAsphere(
         convert(t, x.curvature),
         convert(t, x.conic),
@@ -36,8 +36,8 @@ function EvenAsphere(
             convert(typ, c4),
             convert(typ, c6),
             convert(typ, c8)),
-        with_fieldtype(typ, aperture),
-        with_fieldtype(typ, n),
+        convert_fields(typ, aperture),
+        convert_fields(typ, n),
         convert(typ, t),
         id)
 end

@@ -7,7 +7,7 @@ struct ClearDiameter{T <: Real}
 end
 
 
-function with_fieldtype(t, x :: ClearDiameter)
+function convert_fields(t, x :: ClearDiameter)
     ClearDiameter(convert(t, x.clear_diameter))
 end
 

@@ -27,7 +27,7 @@ function Base.convert(::Type{ConstantIndex{T}}, x :: ConstantIndex{R}) where T w
 end
 
 
-function with_fieldtype(t, x :: ConstantIndex)
+function convert_fields(t, x :: ConstantIndex)
     convert(ConstantIndex{t}, x)
 end
 
@@ -66,7 +66,7 @@ function Base.convert(::Type{Sellmeier_1{T}}, x :: Sellmeier_1{R}) where T where
         )
 end
 
-function with_fieldtype(t, x :: Sellmeier_1)
+function convert_fields(t, x :: Sellmeier_1)
     convert(Sellmeier_1{t}, x)
 end
 

@@ -4,21 +4,21 @@ struct Object{T}
     function Object(n, t)
         typ = promote_type(fieldtypes(typeof(n))...,
                            typeof(t))
-        n2 = with_fieldtype(typ, n)
+        n2 = convert_fields(typ, n)
         t2 = convert(typ, t)
         new{typeof(t2)}(n2, t2)
     end
 end
 
 
-function with_fieldtype(t, x :: Object)
-    Object(with_fieldtype(t, x.n,), convert(t, x.t))
+function convert_fields(t, x :: Object)
+    Object(convert_fields(t, x.n,), convert(t, x.t))
 end
 
 
 function Base.convert(::Type{Object{T}}, x :: Object) where T
     Object(
-        with_fieldtype(T, x.n),
+        convert_fields(T, x.n),
         convert(T, x.t)
     )
 end
@@ -35,7 +35,7 @@ struct Lens{T <: Real}
         typ = promote_type(
             typeof(object.t),
             typeof(components[1].surfaces[1].t))
-        new{typ}(name, with_fieldtype(typ, object), convert(Vector{OpticalComponent{typ}}, components))
+        new{typ}(name, convert_fields(typ, object), convert(Vector{OpticalComponent{typ}}, components))
     end
 end
 

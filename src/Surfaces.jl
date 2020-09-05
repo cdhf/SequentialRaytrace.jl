@@ -35,14 +35,14 @@ end
 Base.promote_rule(::Type{OpticalSurface{T1}}, ::Type{OpticalSurface{T2}}) where T1 where T2 = OpticalSurface{promote_type(T1, T2)}
 
 
-with_fieldtype(t, :: Nothing) = nothing
+convert_fields(t, :: Nothing) = nothing
 
 
 function Base.convert(::Type{OpticalSurface{T}}, x :: OpticalSurface) where T
     OpticalSurface(
-        with_fieldtype(T, x.surface),
-        with_fieldtype(T, x.aperture),
-        with_fieldtype(T, x.n),
+        convert_fields(T, x.surface),
+        convert_fields(T, x.aperture),
+        convert_fields(T, x.n),
         convert(T, x.t),
         x.id
     )
