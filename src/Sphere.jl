@@ -1,9 +1,9 @@
 struct Sphere{T} <: AbstractRotationalSymmetricSurface{T}
-    curvature :: T
+    curvature::T
 end
 
 
-convert_fields(t, x :: Sphere) = Sphere(convert(t, x.curvature))
+convert_fields(t, x::Sphere) = Sphere(convert(t, x.curvature))
 
 
 function Sphere(curvature, aperture, n, t, id = nothing)
@@ -11,20 +11,27 @@ function Sphere(curvature, aperture, n, t, id = nothing)
         typeof(curvature),
         fieldtypes(typeof(aperture))...,
         fieldtypes(typeof(n))...,
-        typeof(t))
-    OpticalSurface(Sphere(convert(typ, curvature)), convert_fields(typ, aperture), convert_fields(typ, n), convert(typ, t), id)
+        typeof(t),
+    )
+    OpticalSurface(
+        Sphere(convert(typ, curvature)),
+        convert_fields(typ, aperture),
+        convert_fields(typ, n),
+        convert(typ, t),
+        id,
+    )
 end
 
 
 Plano(aperture, n, t, id = nothing) = Sphere(0.0, aperture, n, t, id)
 
-function sag(radius, s :: Sphere)
+function sag(radius, s::Sphere)
     radius2 = radius^2
-    return(s.curvature * radius2 / (1 + sqrt(1 - (s.curvature^2 * radius2))))
+    return (s.curvature * radius2 / (1 + sqrt(1 - (s.curvature^2 * radius2))))
 end
 
 # Raytrace für sphärische Flächen
-function transfer_to_intersection!(ray, t, s :: Sphere)
+function transfer_to_intersection!(ray, t, s::Sphere)
     cv = s.curvature
     e = t * ray.cz - (ray.x * ray.cx + ray.y * ray.cy + ray.z * ray.cz)
     M1z = ray.z + e * ray.cz - t
@@ -39,11 +46,14 @@ function transfer_to_intersection!(ray, t, s :: Sphere)
     y1 = ray.y + L * ray.cy
     x1 = ray.x + L * ray.cx
 
-    ray.x = x1; ray.y = y1; ray.z = z1; ray._e1 = E1
+    ray.x = x1
+    ray.y = y1
+    ray.z = z1
+    ray._e1 = E1
     return ray
 end
 
-function refract!(ray, m, s :: Sphere, m1, λ)
+function refract!(ray, m, s::Sphere, m1, λ)
     E1 = ray._e1
     if m == m1
         X1 = ray.cx
@@ -63,6 +73,8 @@ function refract!(ray, m, s :: Sphere, m1, λ)
         X1 = n0 / n1 * ray.cx - g1 * s.curvature * ray.x
     end
 
-    ray.cx = X1; ray.cy = Y1; ray.cz = Z1
+    ray.cx = X1
+    ray.cy = Y1
+    ray.cz = Z1
     return ray
 end

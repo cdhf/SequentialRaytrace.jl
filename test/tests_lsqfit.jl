@@ -7,17 +7,16 @@ function mylens(imageDist)
     Lens(
         "",
         Object(Air, 10.0),
-        [
-            OpticalComponent(
-                :base,
-                Nothing,
-                nothing,
-                [
-                    EvenAsphere(0, 0, 0, 0, 0, ClearDiameter(100), Silica, 1.5, :S1),
-                    Plano(nothing, Silica, 1.5),
-                    Sphere(-1.0/98.3, nothing, Air, imageDist, :S2)
-                ])
-        ]
+        [OpticalComponent(
+            :base,
+            Nothing,
+            nothing,
+            [
+                EvenAsphere(0, 0, 0, 0, 0, ClearDiameter(100), Silica, 1.5, :S1),
+                Plano(nothing, Silica, 1.5),
+                Sphere(-1.0 / 98.3, nothing, Air, imageDist, :S2),
+            ],
+        )],
     )
 end
 

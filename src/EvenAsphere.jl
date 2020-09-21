@@ -1,13 +1,13 @@
 struct EvenAsphere{T} <: AbstractRotationalSymmetricSurface{T}
-    curvature :: T
-    conic :: T
-    c4 :: T
-    c6 :: T
-    c8 :: T
+    curvature::T
+    conic::T
+    c4::T
+    c6::T
+    c8::T
 end
 
 
-function convert_fields(t, x :: EvenAsphere)
+function convert_fields(t, x::EvenAsphere)
     EvenAsphere(
         convert(t, x.curvature),
         convert(t, x.conic),
@@ -18,8 +18,7 @@ function convert_fields(t, x :: EvenAsphere)
 end
 
 
-function EvenAsphere(
-    curvature, conic, c4, c6, c8, aperture, n, t, id = nothing)
+function EvenAsphere(curvature, conic, c4, c6, c8, aperture, n, t, id = nothing)
     typ = promote_type(
         typeof(curvature),
         typeof(conic),
@@ -28,29 +27,32 @@ function EvenAsphere(
         typeof(c8),
         fieldtypes(typeof(aperture))...,
         fieldtypes(typeof(n))...,
-        typeof(t))
+        typeof(t),
+    )
     OpticalSurface(
         EvenAsphere(
             convert(typ, curvature),
             convert(typ, conic),
             convert(typ, c4),
             convert(typ, c6),
-            convert(typ, c8)),
+            convert(typ, c8),
+        ),
         convert_fields(typ, aperture),
         convert_fields(typ, n),
         convert(typ, t),
-        id)
+        id,
+    )
 end
 
-function sag(radial_dist, s :: EvenAsphere)
+function sag(radial_dist, s::EvenAsphere)
     z = s.curvature * radial_dist^2 / abs(1 + sqrt(1 - s.curvature^2 * radial_dist^2))
     z = z + s.c4 * radial_dist^4
     z = z + s.c6 * radial_dist^6
-    return(z + s.c8 * radial_dist^8)
+    return (z + s.c8 * radial_dist^8)
 end
 
 # modelled after us_itera.c example from Zemax user defined surface DLLs
-function transfer_to_intersection_evenasphere!(ray, s :: EvenAsphere{T}) where T
+function transfer_to_intersection_evenasphere!(ray, s::EvenAsphere{T}) where {T}
     t = 100.0
     x = ray.x
     y = ray.y
@@ -74,12 +76,14 @@ function transfer_to_intersection_evenasphere!(ray, s :: EvenAsphere{T}) where T
         end
     end
 
-    ray.x = x; ray.y = y; ray.z = z
+    ray.x = x
+    ray.y = y
+    ray.z = z
     return ray
 end
 
 
-function refract!(ray, m0, s :: EvenAsphere, m1, wavelength)
+function refract!(ray, m0, s::EvenAsphere, m1, wavelength)
     if m0 == m1
         return ray
     end
@@ -98,31 +102,35 @@ function refract!(ray, m0, s :: EvenAsphere, m1, wavelength)
         mn = 0
         nn = -1
     else
-        alpha0 = 1.0 - (1.0 + k)*cv*cv*r2;
-        alpha = 1.0 - (1.0 + k) * cv*cv * r2
+        alpha0 = 1.0 - (1.0 + k) * cv * cv * r2
+        alpha = 1.0 - (1.0 + k) * cv * cv * r2
         if alpha < 0
             return ray_miss_error()
         end
         alpha = sqrt(alpha)
-        mm0 = (cv / (1.0 + alpha))*(2.0 + (cv*cv*r2*(1.0 + k)) / (alpha*(1.0 + alpha)))
-        mm = (cv / (1.0+alpha)) * (2.0 + (cv*cv * r2 * (1.0+k)) / (alpha*(1.0+alpha)))
-        mm += 4 * s.c4 * r2^(4/2 - 1)
-        mm += 6 * s.c6 * r2^(6/2 - 1)
-        mm += 8 * s.c8 * r2^(8/2 - 1)
+        mm0 =
+            (cv / (1.0 + alpha)) *
+            (2.0 + (cv * cv * r2 * (1.0 + k)) / (alpha * (1.0 + alpha)))
+        mm =
+            (cv / (1.0 + alpha)) *
+            (2.0 + (cv * cv * r2 * (1.0 + k)) / (alpha * (1.0 + alpha)))
+        mm += 4 * s.c4 * r2^(4 / 2 - 1)
+        mm += 6 * s.c6 * r2^(6 / 2 - 1)
+        mm += 8 * s.c8 * r2^(8 / 2 - 1)
 
-        mm0 += 4 * s.c4 * r2;
-        mm0 += 6 * s.c6 * r2 * r2;
-        mm0 += 8 * s.c8 * r2 * r2 * r2;
+        mm0 += 4 * s.c4 * r2
+        mm0 += 6 * s.c6 * r2 * r2
+        mm0 += 8 * s.c8 * r2 * r2 * r2
 
         mx = x * mm
         my = y * mm
-        nn = -sqrt(1/(1+mx^2+my^2))
+        nn = -sqrt(1 / (1 + mx^2 + my^2))
         ln = -mx * nn
         mn = -my * nn
 
-        nn0 = -sqrt(1 / (1 + (mx*mx) + (my*my)))
-        ln0 = -mx*nn
-        mn0 = -my*nn0
+        nn0 = -sqrt(1 / (1 + (mx * mx) + (my * my)))
+        ln0 = -mx * nn
+        mn0 = -my * nn0
     end
     nr = refractive_index(m0, wavelength) / refractive_index(m1, wavelength)
     cosi = abs(X * ln + Y * mn + Z * nn)
@@ -140,12 +148,14 @@ function refract!(ray, m0, s :: EvenAsphere, m1, wavelength)
     Y = nr * Y + gamma * mn
     Z = nr * Z + gamma * nn
 
-    ray.cx = X; ray.cy = Y; ray.cz = Z
+    ray.cx = X
+    ray.cy = Y
+    ray.cz = Z
     return ray
 end
 
 
-function transfer_to_intersection!(ray, t :: T, s :: EvenAsphere{T}) where T
+function transfer_to_intersection!(ray, t::T, s::EvenAsphere{T}) where {T}
     # propagiere den Strahl erstmal zur sphärischen Grundfläche,
     # was wahrscheinlich ein ganz guter Startwert ist
     # TODO: missing error handling
