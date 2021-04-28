@@ -21,15 +21,6 @@ struct OpticalComponent{T<:Real}
     end
 end
 
-Base.promote_rule(
-    ::Type{OpticalComponent{T1}},
-    ::Type{OpticalComponent{T2}},
-) where {T1} where {T2} = OpticalComponent{promote_type(T1, T2)}
-
-function Base.convert(::Type{OpticalComponent{T}}, x::OpticalComponent) where {T}
-    OpticalComponent(x.id, x.type, x.meta_data, Vector{OpticalSurface{T}}(x.surfaces))
-end
-
 function track_length(oc::OpticalComponent{T}) where {T}
     sum(map(s -> s.t, oc.surfaces))
 end

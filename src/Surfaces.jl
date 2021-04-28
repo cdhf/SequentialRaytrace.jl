@@ -30,23 +30,3 @@ struct OpticalSurface{T<:Real}
     t::T
     id::Union{Symbol,Nothing}
 end
-
-
-Base.promote_rule(
-    ::Type{OpticalSurface{T1}},
-    ::Type{OpticalSurface{T2}},
-) where {T1} where {T2} = OpticalSurface{promote_type(T1, T2)}
-
-
-convert_fields(t, ::Nothing) = nothing
-
-
-function Base.convert(::Type{OpticalSurface{T}}, x::OpticalSurface) where {T}
-    OpticalSurface(
-        convert_fields(T, x.surface),
-        convert_fields(T, x.aperture),
-        convert_fields(T, x.n),
-        convert(T, x.t),
-        x.id,
-    )
-end

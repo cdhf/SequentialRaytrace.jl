@@ -22,16 +22,6 @@ struct ConstantIndex{T} <: AbstractMedium{T}
 end
 
 
-function Base.convert(::Type{ConstantIndex{T}}, x::ConstantIndex{R}) where {T} where {R}
-    ConstantIndex{T}(convert(T, x.n))
-end
-
-
-function convert_fields(t, x::ConstantIndex)
-    convert(ConstantIndex{t}, x)
-end
-
-
 function refractive_index(medium::ConstantIndex{T}, λ::T) where {T}
     medium.n
 end
@@ -54,21 +44,6 @@ struct Sellmeier_1{T} <: AbstractMedium{T}
     l3::T
 end
 
-
-function Base.convert(::Type{Sellmeier_1{T}}, x::Sellmeier_1{R}) where {T} where {R}
-    Sellmeier_1{T}(
-        convert(T, x.k1),
-        convert(T, x.l1),
-        convert(T, x.k2),
-        convert(T, x.l2),
-        convert(T, x.k3),
-        convert(T, x.l3),
-    )
-end
-
-function convert_fields(t, x::Sellmeier_1)
-    convert(Sellmeier_1{t}, x)
-end
 
 function refractive_index(medium::Sellmeier_1{T}, λ::T) where {T}
     λ2 = λ^2

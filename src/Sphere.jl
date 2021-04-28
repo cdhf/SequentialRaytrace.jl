@@ -3,21 +3,12 @@ struct Sphere{T} <: AbstractRotationalSymmetricSurface{T}
 end
 
 
-convert_fields(t, x::Sphere) = Sphere(convert(t, x.curvature))
-
-
 function Sphere(curvature, aperture, n, t, id = nothing)
-    typ = promote_type(
-        typeof(curvature),
-        fieldtypes(typeof(aperture))...,
-        fieldtypes(typeof(n))...,
-        typeof(t),
-    )
     OpticalSurface(
-        Sphere(convert(typ, curvature)),
-        convert_fields(typ, aperture),
-        convert_fields(typ, n),
-        convert(typ, t),
+        Sphere(curvature),
+        aperture,
+        n,
+        t,
         id,
     )
 end

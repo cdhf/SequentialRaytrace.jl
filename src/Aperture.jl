@@ -8,11 +8,6 @@ struct ClearDiameter{T<:Real}
 end
 
 
-function convert_fields(t, x::ClearDiameter)
-    ClearDiameter(convert(t, x.clear_diameter))
-end
-
-
 function is_vignetted(ray, aper::Nothing) where {T}
     return (false)
 end

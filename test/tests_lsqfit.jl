@@ -2,8 +2,9 @@ using Test
 using SequentialRaytrace
 using LsqFit
 
+Air2(t) = ConstantIndex(convert(t, 1.0))
+
 function mylens(imageDist)
-    t = typeof(imageDist)
     Lens(
         "",
         Object(Air, 10.0),
@@ -12,7 +13,7 @@ function mylens(imageDist)
             Nothing,
             nothing,
             [
-                EvenAsphere(0, 0, 0, 0, 0, ClearDiameter(100), Silica, 1.5, :S1),
+                EvenAsphere(0.0, 0.0, 0.0, 0.0, 0.0, ClearDiameter(100.0), Silica, 1.5, :S1),
                 Plano(nothing, Silica, 1.5),
                 Sphere(-1.0 / 98.3, nothing, Air, imageDist, :S2),
             ],
@@ -32,12 +33,13 @@ end
 
 
 @testset "LsqFit" begin
-    @testset "optimize with automatic derivatives" begin
+    @testset "optimize without automatic derivatives" begin
         xdata = [0.0]
         ydata = [0.0]
 
         vect_model(x, p) = model.(x, p)
-        r = curve_fit(vect_model, xdata, ydata, [10.0], autodiff = :forwarddiff)
+        r = curve_fit(vect_model, xdata, ydata, [10.0])
+        # r = curve_fit(vect_model, xdata, ydata, [10.0], autodiff = :forwarddiff)
         @test r.param[1] ≈ -12.7875519 atol = 1e-7
     end
 end

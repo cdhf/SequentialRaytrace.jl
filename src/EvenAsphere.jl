@@ -7,39 +7,18 @@ struct EvenAsphere{T} <: AbstractRotationalSymmetricSurface{T}
 end
 
 
-function convert_fields(t, x::EvenAsphere)
-    EvenAsphere(
-        convert(t, x.curvature),
-        convert(t, x.conic),
-        convert(t, x.c4),
-        convert(t, x.c6),
-        convert(t, x.c8),
-    )
-end
-
-
 function EvenAsphere(curvature, conic, c4, c6, c8, aperture, n, t, id = nothing)
-    typ = promote_type(
-        typeof(curvature),
-        typeof(conic),
-        typeof(c4),
-        typeof(c6),
-        typeof(c8),
-        fieldtypes(typeof(aperture))...,
-        fieldtypes(typeof(n))...,
-        typeof(t),
-    )
     OpticalSurface(
         EvenAsphere(
-            convert(typ, curvature),
-            convert(typ, conic),
-            convert(typ, c4),
-            convert(typ, c6),
-            convert(typ, c8),
+            curvature,
+            conic,
+            c4,
+            c6,
+            c8,
         ),
-        convert_fields(typ, aperture),
-        convert_fields(typ, n),
-        convert(typ, t),
+        aperture,
+        n,
+        t,
         id,
     )
 end

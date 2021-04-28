@@ -1,7 +1,7 @@
 name = "SequentialRaytrace"
 uuid = "e6e29653-ad00-4000-b95c-264f03acb66e"
 authors = ["Danny Chan"]
-version = "0.1.0"
+version = "0.2.0"
 
 [compat]
 julia = "1.2"
