@@ -7,12 +7,12 @@ struct OpticalComponent{T<:Real}
     id::Symbol
     type::DataType
     meta_data::Any
-    surfaces::Vector{OpticalSurface{T}}
+    surfaces::AbstractVector{OpticalSurface{T}}
     function OpticalComponent(
         id,
         type,
         meta_data,
-        surfaces::Vector{OpticalSurface{T}},
+        surfaces::AbstractVector{OpticalSurface{T}},
     ) where {T}
         if !allunique(filter(s -> !isnothing(s.id), surfaces))
             error("Surface IDs must be nothing or unique")

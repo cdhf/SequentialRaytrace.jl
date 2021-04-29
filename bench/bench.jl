@@ -2,75 +2,85 @@ using BenchmarkTools
 using SequentialRaytrace
 import SequentialRaytrace: gen_result, update_result!
 using TimerOutputs
+using StaticArrays
 
+# 12.881 us AbstractVector
+# 12.796 us Vector
+# 1.74 SVector OpticalComponent
 function testlens()
     Lens("", Object(Air, 200.0),
-         [
-             OpticalComponent(:a, Nothing, nothing, [
-                 Sphere(1/50, nothing, Silica, 15.0, :first_surface)
-                 EvenAsphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, Air, 65.0)
-                 Plano(nothing, Silica, 15.0 )
+        SVector(
+        #  [
+             OpticalComponent(:a, Nothing, nothing, 
+            # [
+             SVector(
+                 Sphere(1/50, nothing, Silica, 15.0, :first_surface),
+                 EvenAsphere(-1/50, 0.0, 0.0, 0.0, 0.0, nothing, Air, 65.0),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
+                 Plano(nothing, Air, 15.0 ),
+                 Plano(nothing, Silica, 15.0 ),
                  Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-                 Plano(nothing, Silica, 15.0 )
-                 Plano(nothing, Air, 15.0 )
-            ])
-         ]
+            )
+            # ]
+            )
+        #  ]
+        )
          )
 end
 
