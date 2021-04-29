@@ -7,12 +7,12 @@ struct OpticalComponent{T<:Real}
     id::Symbol
     type::DataType
     meta_data::Any
-    surfaces::Vector{OpticalSurface{T}}
+    surfaces::AbstractVector{OpticalSurface{T}}
     function OpticalComponent(
         id,
         type,
         meta_data,
-        surfaces::Vector{OpticalSurface{T}},
+        surfaces::AbstractVector{OpticalSurface{T}},
     ) where {T}
         if !allunique(filter(s -> !isnothing(s.id), surfaces))
             error("Surface IDs must be nothing or unique")
@@ -25,11 +25,11 @@ function track_length(oc::OpticalComponent{T}) where {T}
     sum(map(s -> s.t, oc.surfaces))
 end
 
-function track_length(os::Vector{OpticalSurface{T}}) where {T}
+function track_length(os::AbstractVector{OpticalSurface{T}}) where {T}
     sum(map(s -> s.t, os))
 end
 
-function track_length(os::Vector{OpticalSurface{T}}, id::Symbol) where {T}
+function track_length(os::AbstractVector{OpticalSurface{T}}, id::Symbol) where {T}
     l = zero(T)
     for s in os
         l += s.t
